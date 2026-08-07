@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[연결의 대화 시리즈 ①] 우리는 왜 자꾸 단절되는가</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { brand: { 50:'#f4f6f8',100:'#e9ecef',800:'#1e293b',900:'#0f172a',accent:'#3b82f6',highlight:'#fef3c7' } } } } }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:ital,wght=0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; color: #334155; word-break: keep-all; }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- HEADER -->
+    <header class="bg-slate-100/70 text-brand-900 py-14 px-6 relative overflow-hidden border-b border-slate-200">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.06),transparent)]"></div>
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <div class="text-left flex flex-wrap gap-2">
+                <span class="inline-block bg-blue-600 text-white text-xs font-bold tracking-wider uppercase px-3 py-1.5 rounded-full mb-6">
+                    연결의 대화 시리즈 ① / 전 5편
+                </span>
+                <span class="inline-block bg-blue-50 text-blue-600 text-xs font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-blue-200 mb-6">
+                    📎 특강 후속 자료 · PART 1. Reason
+                </span>
+            </div>
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight mb-5 text-slate-700">
+                우리는 왜 자꾸 <span class="text-blue-500">단절되는가</span>
+            </h1>
+            <p class="text-slate-400 text-xs md:text-sm font-light max-w-3xl mx-auto leading-relaxed">
+                대화가 막히는 네 가지 이유 · 도서 『말이 통해야 일이 통한다』(박재연) 기반<br>
+                특강 &lt;연결의 대화&gt; 대상 실장님들을 위한 시리즈 학습 자료
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 md:px-6 py-12">
+
+        <!-- 시리즈 안내 -->
+        <div class="bg-blue-50/60 border border-blue-100 rounded-2xl px-6 py-5 mb-10 text-sm text-slate-600 leading-relaxed">
+            <p class="font-bold text-blue-900 mb-2">📖 시리즈 안내</p>
+            <p>
+                지난 특강에서 <strong class="text-brand-900">'단절의 대화 → 연결의 대화'</strong>라는 큰 그림을 다뤘습니다. 이번 시리즈는 책의 목차를 따라 다섯 편으로 나누어 깊이 들어갑니다. 그 첫 편은 <strong class="text-brand-900">'우리는 왜 단절되는가'(Reason)</strong>입니다. 나쁜 사람이라서가 아니라, 대화가 막히는 데는 네 가지 뿌리 깊은 이유가 있습니다.
+            </p>
+        </div>
+
+        <!-- 도입 -->
+        <div class="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-slate-100 mb-12">
+            <p class="text-lg font-bold text-brand-900 mb-4">이번 편에서 다루는 네 가지 이유</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">① 잘못 배워 왔기 때문</h4>
+                    <p class="text-sm text-slate-500 mt-1">'맞다/틀리다'로 나누는 판단 교육</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">② 내가 옳다고 믿기 때문</h4>
+                    <p class="text-sm text-slate-500 mt-1">강요·협박·비교로 상대를 움직이려 함</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">③ '당연히·마땅히'라고 믿기 때문</h4>
+                    <p class="text-sm text-slate-500 mt-1">역할에 대한 당위와 책임 떠넘기기</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">④ 평가를 '사실'이라 믿기 때문</h4>
+                    <p class="text-sm text-slate-500 mt-1">단정적인 '꼬리표'가 관계를 굳힘</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 이유 1 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">1</span>
+                <h2 class="text-2xl font-bold text-brand-900">우리가 나빠서가 아니라, 잘못 배워 왔기 때문</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    우리는 어려서부터 <strong class="text-brand-900 font-semibold">"1+1=2는 맞고 1+1=1은 틀렸다"</strong>는 식으로, 세상을 '맞다/틀리다', '좋다/나쁘다'로 나누는 법을 배웠습니다. 우리는 타인의 의견에 동의하는 태도를 긍정적으로, 다른 의견을 제시하는 태도를 부정적으로 받아들이기도 합니다.
+                </p>
+                <p>
+                    이 판단 습관은 문제를 푸는 데는 유용했지만, <strong class="text-brand-900 font-semibold">인간관계에서는 오히려 걸림돌</strong>이 됩니다. 대화에서는 해결책을 서두르기 전에 <strong class="text-brand-900 font-semibold">서로의 관점과 필요를 충분히 이해하는 과정</strong>이 필요합니다. 구성원 간 신뢰와 연결은 정보를 더 안전하게 공유하고 협력적 문제 해결을 가능하게 하는 중요한 기반입니다.
+                </p>
+            </div>
+
+            <!-- 사례 박스: 카드놀이 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-5">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 책 속 사례 — 카드놀이의 갈등</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    지인들과 카드놀이를 하는데, 저마다 자기가 배운 규칙이 옳다며 갈등이 생겼습니다. 결국 각자 '내가 옳다'는 생각을 내려놓고, 대화를 통해 함께 동의할 새 규칙을 정하고 나서야 비로소 즐겁게 게임할 수 있었습니다. 사소해 보이지만, 조직의 갈등도 이와 똑같은 구조입니다.
+                </p>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 판단 대신 <strong>"당신 입장에서는 그럴 수도 있겠군요. 그것을 인정합니다"</strong>라는 수용에서 대화가 시작됩니다.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 이유 2 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">2</span>
+                <h2 class="text-2xl font-bold text-brand-900">내가 옳다고 믿는 것이 정답이라고 생각하기 때문</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    내가 옳다는 확신이 너무 커지면 상대의 말에 귀를 닫고, 그를 움직이려고 <strong class="text-brand-900 font-semibold">강요·협박·비교</strong>를 하게 됩니다. 좋은 의도에서 시작했더라도 강요와 비교가 반복되면, 상대는 존중받지 못한다고 느끼고 대화는 일방적으로 변할 수 있습니다.
+                </p>
+            </div>
+
+            <!-- 사례: 단절의 말 예시 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-5">
+                <h4 class="font-bold text-brand-900 mb-3 text-sm">🗣️ 조직에서 나타날 수 있는 강요·비교의 표현</h4>
+                <div class="space-y-2 text-sm">
+                    <p class="bg-rose-50 rounded-lg px-4 py-2 text-rose-800">"김 매니저, 그 정도 경력이면 이 정도는 해야지."</p>
+                    <p class="bg-rose-50 rounded-lg px-4 py-2 text-rose-800">"도대체 몇 번을 얘기해? 똑바로 하란 말이야."</p>
+                    <p class="bg-rose-50 rounded-lg px-4 py-2 text-rose-800">"박 책임 보고 좀 배워. 왜 이렇게 달라?"</p>
+                    <p class="bg-rose-50 rounded-lg px-4 py-2 text-rose-800">"군소리하지 말고, 시키면 시키는 대로 해!"</p>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 leading-relaxed">※ 아래 문장은 이해를 돕기 위해 조직 상황에 맞게 재구성한 예시입니다.</p><p class="text-xs text-slate-500 mt-2 leading-relaxed">이런 말은 단기적으로 행동을 유도할 수 있지만, 장기적으로는 관계의 단절과 심리적 거리감을 키워 <strong class="text-slate-700">조직의 침묵</strong>으로 이어질 수 있습니다.</p>
+            </div>
+
+            <!-- 사례: 어떤 사람과 일하고 싶은가 -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mb-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                    <div class="p-6 bg-slate-50/50">
+                        <div class="flex items-center space-x-2 mb-4 text-amber-700">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                            <h4 class="font-bold text-base">🟡 함께 일하기 불편한 사람</h4>
+                        </div>
+                        <ul class="space-y-2 text-slate-600 text-sm">
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">•</span><span>건성으로 듣고 결국 자기 하고 싶은 대로 하는 상사</span></li>
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">•</span><span>말해 보라 해서 말하면 비난·무시하는 사람</span></li>
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">•</span><span>이유는 듣지 않고 무조건 하라는 상사</span></li>
+                        </ul>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center space-x-2 mb-4 text-emerald-700">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <h4 class="font-bold text-base">🟢 함께 일하고 싶은 사람</h4>
+                        </div>
+                        <ul class="space-y-2 text-slate-600 text-sm">
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">•</span><span>동의하지 않더라도 끝까지 듣고 "그럴 수 있겠다" 해주는 상사</span></li>
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">•</span><span>제안을 수락하지 않더라도 "기억하겠다" 말해주는 상사</span></li>
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">•</span><span>실수를 나무라도 배려하며 얘기해 주는 상사</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 구성원이 <strong>변화의 필요성을 스스로 이해하고 선택할 때 변화는 더 지속될 가능성이 높습니다.</strong> 강요와 비교는 단기적으로 행동을 유도할 수 있지만, 장기적으로는 관계의 단절과 심리적 거리감을 키울 수 있습니다.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 이유 3 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">3</span>
+                <h2 class="text-2xl font-bold text-brand-900">'리더니까 당연히, 구성원이니까 마땅히'라고 믿기 때문</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    역할에 대한 '당연함'과 책임 떠넘기기는 대화를 가로막습니다. 같은 상황을 두고 리더와 구성원이 각자 <strong class="text-brand-900 font-semibold">"내 책임은 아니다"</strong>라고 믿으면, 서로의 말은 들리지 않습니다.
+                </p>
+            </div>
+
+            <!-- 사례: 상사 vs 부하 양쪽 마음 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                    <h4 class="font-bold text-brand-900 mb-2 text-sm">👔 리더의 마음</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed">"그 구성원은 책임감이 부족해 보여요. 당연히 리더 말을 잘 듣고 자기 업무를 완벽히 해야 하는 것 아닙니까? <strong class="text-slate-800">제 리더십 문제가 아니라</strong> 그 사람 문제예요."</p>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                    <h4 class="font-bold text-brand-900 mb-2 text-sm">👤 구성원의 마음</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed">"리더는 업무의 세부 과정까지 지나치게 관여해요. 당연히 리더라면 먼저 모범을 보이고 믿어 줘야죠. <strong class="text-slate-800">이게 어떻게 제 책임입니까?</strong>"</p>
+                </div>
+            </div>
+            <p class="text-sm text-slate-500 leading-relaxed mb-5">→ 양쪽 모두 '당연한 것'과 '책임 회피'에 가려, 서로의 진짜 마음을 들으려 하지 않습니다.</p>
+
+            <!-- 사례: 저자의 자녀 이야기 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-5">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 책 속 사례 — "당연히 해야 할 일"이라 여겼더니</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    저자는 아이가 공부하는 것을 '당연한 의무'로 여겼습니다. 그래서 아이가 선생님께 "집중 잘하고 열심히 했다"는 칭찬을 받아 왔을 때도 <strong class="text-slate-800">"당연히 할 일을 했을 뿐"</strong>이라며 기뻐하지 않았고, 오히려 "그동안 왜 안 했지?"라며 화를 냈습니다. 당연함과 책임 회피가 자리 잡은 삶에는 <strong class="text-slate-800">감사가 사라집니다.</strong>
+                </p>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 의무감만으로는 지속적인 동기부여가 어렵습니다. <strong>리더의 말과 행동은 구성원의 자발성과 책임감을 촉진하거나 위축시키는 중요한 요인이 됩니다.</strong>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 이유 4 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">4</span>
+                <h2 class="text-2xl font-bold text-brand-900">우리의 경험과 평가를 '사실'이라고 믿기 때문</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    우리는 상대의 특정 모습을 보고 <strong class="text-brand-900 font-semibold">'저 사람은 이런 사람이야'</strong>라는 단정적인 꼬리표를 붙입니다. 문제는 이 꼬리표가 관계를 연결시키기보다 <strong class="text-brand-900 font-semibold">굳혀서 단절</strong>시킨다는 점입니다. 자기가 아는 이미지로만 상대를 보려 하기 때문입니다.
+                </p>
+            </div>
+
+            <!-- 사례: 배려심 꼬리표 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-4">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 책 속 사례 ① — "나는 배려심이 많다"는 꼬리표</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    한 특강에서 "배려심이 많다"고 적은 김 책임에게 저자가 물었습니다. "그렇게 배려했을 때 기쁘셨나요?" 잠시 침묵하던 그가 답했습니다. <strong class="text-slate-800">"아니요, 기쁘지 않았네요. 원해서 한 게 아니었어요."</strong> 좋은 꼬리표조차 '반드시 그래야 한다'는 강요가 되어, 정작 본인을 옭아맵니다.
+                </p>
+            </div>
+
+            <!-- 사례: 운전 이야기 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-5">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 책 속 사례 ② — 한 사람 안의 여러 모습</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    평소 차분한 사람도 운전 중 갑자기 끼어든 차량을 보며 상대를 무책임한 사람으로 단정할 수 있고, 다른 상황에서는 위험에 처한 타인을 걱정할 수 있습니다. 사람은 <strong class="text-slate-800">하나의 꼬리표로 규정될 수 없는 존재</strong>입니다. 그런데 우리는 상대를 빨리 한 단어로 확정 짓고 싶어 합니다.
+                </p>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 건강한 대화를 위해서는 <strong>자신의 평가를 사실과 구분하고, 상대의 다른 모습과 맥락을 함께 살펴볼 필요</strong>가 있습니다. '이기적'이라고 단정했다면, 언제나 그런지 다른 모습은 없는지 관찰하는 데서 대화가 시작됩니다.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 실천 -->
+        <section class="mb-14 bg-slate-900 text-white rounded-3xl p-8 md:p-10 relative overflow-hidden shadow-xl">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.1),transparent)]"></div>
+            <div class="relative z-10">
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 text-blue-300 font-bold text-sm">✓</span>
+                    <h2 class="text-2xl font-bold text-white">이번 주, '단절의 이유' 알아차리기</h2>
+                </div>
+                <p class="text-slate-400 mb-8 text-sm md:text-base leading-relaxed">네 가지 이유 중 내가 자주 빠지는 것을 하나씩 알아차려 보세요. (탭해서 체크할 수 있습니다.)</p>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">1. 상대를 '맞다/틀리다'로 판단하는 대신 "그럴 수 있겠다"고 말해 보았다.</span></label>
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">2. 상대를 움직이려 강요·비교하는 말을 멈춰 보았다.</span></label>
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">3. '당연히·마땅히'라는 생각이 올라올 때 한 번 멈춰 보았다.</span></label>
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">4. 구성원에게 붙인 '꼬리표'와 다른 모습을 찾아 관찰해 보았다.</span></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 한 문장 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">★</span>
+                <h2 class="text-2xl font-bold text-brand-900">기억할 한 문장</h2>
+            </div>
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-3xl p-8 relative shadow-sm">
+                <span class="absolute top-4 left-6 text-6xl text-blue-200/50 font-serif pointer-events-none">“</span>
+                <div class="relative z-10 text-center pt-4">
+                    <p class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed pl-4">
+                        "건강한 문제 해결은 서로의 관점과 필요를 이해하는 대화에서 시작됩니다."
+                    </p>
+                    <p class="text-sm text-slate-400 mt-4">— 「연결의 대화」 후속 학습자료 ① 핵심 메시지</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 다음 편 예고 -->
+        <div class="bg-slate-50 border border-slate-100 rounded-3xl p-8 md:p-10 text-center mb-12">
+            <p class="text-lg text-slate-700 leading-relaxed max-w-2xl mx-auto mb-6">
+                단절의 이유를 알아차리는 것만으로도, 우리는 이미 <strong>연결을 향한 첫걸음</strong>을 뗀 것입니다.
+            </p>
+            <div class="inline-block border-t border-slate-200 pt-6 px-10">
+                <p class="text-sm text-slate-500 mb-1">다음 편 예고</p>
+                <p class="text-base font-bold text-brand-900">시리즈 ② &lt;감정을 다루는 대화&gt; — 화·불안·죄책감·우울을 다루는 법</p>
+            </div>
+        </div>
+
+        <!-- 출처 -->
+        <section class="mb-16">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm">
+                <h3 class="flex items-center font-bold text-brand-900 mb-4 text-base"><span class="mr-2">📚</span> 출처 및 이용 안내</h3>
+                <dl class="space-y-2 text-sm text-slate-600">
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">원저</dt>
+                        <dd>『말이 통해야 일이 통한다 — 직장에서 사용하는 실용 대화법』, 박재연 저, 두란노서원 발행</dd>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">해당 편</dt>
+                        <dd>시리즈 ① — 원저 PART "Reason"(단절되는 네 가지 이유)에 해당</dd>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">활용</dt>
+                        <dd>리더 대상 특강 &lt;연결의 대화&gt;의 시리즈 후속 학습 자료</dd>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">저작권</dt>
+                        <dd>원저의 저작권은 저자 박재연 및 두란노서원에 있습니다.</dd>
+                    </div>
+                </dl>
+                <div class="mt-5 pt-5 border-t border-slate-100 text-xs text-slate-500 leading-relaxed space-y-2">
+                    <p>※ 본 자료는 원문을 그대로 옮기지 않고 <strong class="text-slate-700">핵심 논지와 사례를 요약·재구성한 사내 교육용 참고 자료</strong>입니다. 생성형 AI를 활용해 초안을 구성했으며, 사례와 대화는 이해를 돕기 위해 조직 상황에 맞게 간추리고 재구성했습니다. 세부 맥락과 정확한 내용은 원저를 확인해 주시기 바랍니다.</p>
+                    <p>※ 원저의 풍부한 사례 전문과 상세한 대화 연습은 <strong class="text-slate-700">책을 직접 구입해 읽어 보시기를 권장</strong>합니다.</p>
+                    <p>※ 본 자료는 사내 리더십 교육 목적의 내부 참고용으로만 활용하며, 외부 배포·전송·게시를 금합니다.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-100 border-t border-slate-200 py-8 px-6 text-center text-xs text-slate-400 leading-relaxed">
+        <p>본 자료는 특강 &lt;연결의 대화&gt; 시리즈 ①로, 『말이 통해야 일이 통한다』(박재연, 두란노서원)의 핵심을 재정리한 사내 교육용 자료입니다.</p>
+        <p class="mt-1">원저작권 © 박재연 · 두란노서원. 무단 복제·전송·배포를 금합니다.</p>
+        <p class="mt-3">© 2026 People &amp; Leadership Development Team. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

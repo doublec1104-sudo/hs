@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[연결의 대화 시리즈 ②] 감정을 다루는 대화</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { brand: { 50:'#f4f6f8',100:'#e9ecef',800:'#1e293b',900:'#0f172a',accent:'#3b82f6',highlight:'#fef3c7' } } } } }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:ital,wght=0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; color: #334155; word-break: keep-all; }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- HEADER -->
+    <header class="bg-slate-100/70 text-brand-900 py-14 px-6 relative overflow-hidden border-b border-slate-200">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.06),transparent)]"></div>
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <div class="text-left flex flex-wrap gap-2">
+                <span class="inline-block bg-blue-600 text-white text-xs font-bold tracking-wider uppercase px-3 py-1.5 rounded-full mb-6">
+                    연결의 대화 시리즈 ② / 전 5편
+                </span>
+                <span class="inline-block bg-blue-50 text-blue-600 text-xs font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-blue-200 mb-6">
+                    📎 특강 후속 자료 · PART 2. Emotion
+                </span>
+            </div>
+            <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight mb-5 text-slate-700">
+                감정을 <span class="text-blue-500">다루는 대화</span>
+            </h1>
+            <p class="text-slate-400 text-xs md:text-sm font-light max-w-3xl mx-auto leading-relaxed">
+                화·불안·죄책감, 그리고 비교와 자기평가를 건강하게 다루는 법 · 도서 『말이 통해야 일이 통한다』(박재연) 기반<br>
+                특강 &lt;연결의 대화&gt; 대상 실장님들을 위한 시리즈 학습 자료
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 md:px-6 py-12">
+
+        <!-- 시리즈 안내 -->
+        <div class="bg-blue-50/60 border border-blue-100 rounded-2xl px-6 py-5 mb-10 text-sm text-slate-600 leading-relaxed">
+            <p class="font-bold text-blue-900 mb-2">📖 시리즈 안내</p>
+            <p>
+                지난 <strong class="text-brand-900">①편</strong>에서 '우리는 왜 단절되는가'를 살폈습니다. 이번 <strong class="text-brand-900">②편</strong>은 대화를 가로막는 듯 보이지만 사실은 <strong class="text-brand-900">관계를 깊게 만드는 재료</strong>인 '감정'을 다룹니다. 화·불안·죄책감과 비교에서 비롯되는 자기평가를 어떻게 알아차리고 표현하느냐는 연결의 대화에 중요한 영향을 줍니다.
+            </p>
+        </div>
+
+        <!-- 도입 -->
+        <div class="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-slate-100 mb-12">
+            <p class="text-lg font-bold text-brand-900 mb-4">이번 편에서 다루는 네 가지 감정</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">😤 분노와 화</h4>
+                    <p class="text-sm text-slate-500 mt-1">상대 탓이 아니라, 내 욕구가 보내는 신호</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">😰 불안과 두려움</h4>
+                    <p class="text-sm text-slate-500 mt-1">나눌 때 오히려 관계가 돈독해진다</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">😔 죄책감과 희생</h4>
+                    <p class="text-sm text-slate-500 mt-1">관계의 소중함을 일깨우는 힘</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                    <h4 class="font-bold text-brand-900 text-sm">🪞 비교와 자기평가</h4>
+                    <p class="text-sm text-slate-500 mt-1">비교를 넘어 나만의 가치와 자기 신뢰 발견하기</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 감정 1: 화 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">1</span>
+                <h2 class="text-2xl font-bold text-brand-900">분노와 화 — 상대 탓이 아니라 내 신호</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    타인의 말과 행동은 우리의 감정에 영향을 줄 수 있습니다. 다만 화가 난 뒤 <strong class="text-brand-900 font-semibold">그 감정을 어떻게 이해하고 표현할지는 우리가 선택하고 연습할 수 있습니다.</strong> 상대의 책임을 분명히 살피면서도, 감정에 휩쓸리지 않고 자신에게 중요한 가치와 필요를 확인하는 것이 건강한 대화의 출발점입니다.
+                </p>
+                <p>
+                    화는 <strong class="text-brand-900 font-semibold">나에게 중요한 가치나 필요가 충족되지 않았음을 알려주는 신호</strong>가 될 수 있습니다. 감정을 억누르거나 상대에게 쏟아내기보다, 그 신호를 이해하고 존중을 지키며 표현하는 연습이 필요합니다.
+                </p>
+            </div>
+
+            <!-- 사례: 홍 팀장 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-4">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 원저의 내용을 바탕으로 재구성한 사례 — 인사를 외면당한 리더</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    구성원을 지방으로 배치한 뒤 회의에서 마주쳤는데, 먼저 인사한 자신을 그가 외면했습니다. 걷잡을 수 없이 화가 났지만, 리더는 따지는 대신 <strong class="text-slate-800">"화는 상대 때문이 아니라 나에게 중요한 무언가의 신호"</strong>라는 말을 떠올렸습니다. 그리고 자신에게 정말 중요한 것 — '리더의 결정을 이해받고 싶고, 누구든 반갑게 대하는 사람이고 싶다' — 을 찾았습니다. 이 과정을 통해 즉시 상대를 비난하기보다 자신의 감정과 필요를 먼저 살펴볼 수 있었습니다.
+                </p>
+            </div>
+
+            <!-- 강의 질문 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-4">
+                <h4 class="font-bold text-brand-900 mb-3 text-sm">🗣️ 강한 압박은 사람을 변화시킬 수 있을까?</h4>
+                <div class="space-y-3 text-sm">
+                    <p class="text-slate-600">Q. 내가 비난이나 모욕을 받았을 때 더 잘 배우고 변화할 수 있었는가?</p>
+                    <p class="text-slate-600">Q. 상대에게 강한 압박을 주면 더 빠르게 변화할 것이라고 기대한 적은 없는가?</p>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 leading-relaxed">→ 자신에게 도움이 되지 않았던 압박과 비난이 상대에게는 효과적일 것이라고 가정하기 쉽습니다. 그러나 존중이 결여된 압박은 방어와 침묵을 강화할 수 있습니다.</p>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 화가 올라올 때 신체 반응을 알아차리고 잠시 멈추면, 감정에 휩쓸리지 않고 자신에게 중요한 필요와 적절한 표현 방법을 살펴볼 여지가 생깁니다. 반복되거나 심한 신체 증상이 나타나는 경우에는 감정으로만 해석하지 말고 필요한 건강 지원을 확인해 주세요.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 감정 2: 불안 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">2</span>
+                <h2 class="text-2xl font-bold text-brand-900">불안과 두려움 — 안전한 관계에서 적절히 나누기</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    우리는 강해 보여야 한다는 생각에 <strong class="text-brand-900 font-semibold">가면을 쓰고 갑옷을 입고</strong> 살아갑니다. 여린 본모습을 들키면 만만하게 보일까 두렵기 때문입니다. 그러나 불안과 두려움을 <strong class="text-brand-900 font-semibold">안전하고 신뢰할 수 있는 관계에서 적절한 범위로 나누면, 상호 이해와 지원을 촉진할 수 있습니다.</strong>
+                </p>
+            </div>
+
+          
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                    <div class="p-6 bg-slate-50/50">
+                        <h4 class="font-bold text-brand-900 mb-3 text-sm">감정 표현에 대한 부담</h4>
+                        <ul class="space-y-2 text-slate-600 text-sm">
+                            <li class="flex items-start"><span class="text-slate-400 mr-2">"</span><span>업무 관계에서 개인적인 감정을 이야기하는 것이 익숙하지 않습니다.</span></li>
+                            <li class="flex items-start"><span class="text-slate-400 mr-2">"</span><span>감정을 드러내면 전문성이 부족해 보일까 걱정됩니다.</span></li>
+                            <li class="flex items-start"><span class="text-slate-400 mr-2">"</span><span>조직에서는 사실과 해결책만 다루는 것이 효율적이라고 생각했습니다.</span></li>
+                        </ul>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-brand-900 mb-3 text-sm"> 안전한 범위의 공유</h4>
+                        <ul class="space-y-2 text-slate-600 text-sm">
+                            <li class="flex items-start"><span class="text-blue-400 mr-2">"</span><span>적절한 범위에서 고민을 나누니 서로의 상황을 더 잘 이해할 수 있었습니다.</span></li>
+                            <li class="flex items-start"><span class="text-blue-400 mr-2">"</span><span>감정을 이야기하는 것이 해결을 포기하는 일은 아니라는 점을 알게 됐습니다.</span></li>
+                            <li class="flex items-start"><span class="text-blue-400 mr-2">"</span><span>상대의 상황을 이해한 뒤 해결책을 논의하니 대화가 더 구체적이 됐습니다.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 사례: 도움이 필요한 상황을 공유한 리더 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-4">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 원저의 내용을 바탕으로 재구성한 사례 — 도움이 필요한 상황을 나눈 리더</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    어려움을 혼자 감당하던 한 리더는 신뢰할 수 있는 일부 사람에게 현재 상황과 필요한 도움을 조심스럽게 공유했습니다. 예상과 달리 <strong class="text-slate-800">실질적인 지원과 이해</strong>를 얻을 수 있었습니다. 다만 개인적인 건강 정보와 감정의 공유 여부 및 범위는 관계, 상황, 조직 환경을 고려해 본인이 선택해야 합니다.
+                </p>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 자신의 어려움을 <strong>안전하고 신뢰할 수 있는 관계에서 적절한 범위로 나누는 것</strong>은 이해와 협력을 촉진할 수 있습니다. 다만 공유 여부와 범위는 당사자가 선택해야 합니다.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 감정 3: 죄책감 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">3</span>
+                <h2 class="text-2xl font-bold text-brand-900">죄책감과 희생 — 관계의 소중함을 일깨우는 힘</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    원저에서는 죄책감을 <strong class="text-brand-900 font-semibold">자신을 반복적으로 자책하게 만드는 방식</strong>과, <strong class="text-brand-900 font-semibold">관계 회복을 위한 행동으로 이어지는 방식</strong>으로 구분해 설명합니다. 죄책감에 머무르기보다 현재 할 수 있는 책임 있는 행동을 찾는 것이 중요합니다.
+                </p>
+            </div>
+
+            <!-- 사례: 구조조정 팀장 -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-4">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 원저의 내용을 바탕으로 재구성한 사례 — 어려운 인사 결정을 수행해야 하는 리더</h4>
+                <p class="text-sm text-slate-600 leading-relaxed mb-3">
+                    어려운 인사 결정을 수행해야 하는 한 리더는 떠나는 구성원과 남는 구성원 모두에 대한 미안함과 부담을 느꼈습니다.
+                </p>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    → 그는 <strong class="text-slate-800">'바꿀 수 없는 것'과 '현재 할 수 있는 것'을 나누어</strong> 살펴보았습니다. 결정의 무게를 가볍게 여기기보다, 떠나는 구성원을 존중하고 남는 구성원을 지원하기 위해 책임 있게 할 수 있는 행동에 집중했습니다.
+                </p>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> 죄책감의 진짜 의미는 그 안에 매몰되는 것이 아니라, <strong>관계를 얼마나 소중히 여기는지를 의식하고, 내가 할 수 있는 최선을 행동으로 옮기는 것</strong>입니다.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 주제 4: 비교와 자기평가 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">4</span>
+                <h2 class="text-2xl font-bold text-brand-900">비교와 자기평가 — 나만의 가치와 자기 신뢰로</h2>
+            </div>
+            <div class="prose prose-slate max-w-none space-y-4 text-slate-600 leading-relaxed mb-6">
+                <p>
+                    우리는 <strong class="text-brand-900 font-semibold">타인의 강점과 나의 약점을 비교하며 열등감</strong>에, <strong class="text-brand-900 font-semibold">타인의 약점과 나의 강점을 비교하며 우월감</strong>에 빠집니다. 아들러의 말처럼 <strong class="text-brand-900 font-semibold">"우월감의 과시는 열등감의 또 다른 표현"</strong>입니다.
+                </p>
+            </div>
+
+            <!-- 사례: 재즈곡 L.O.V.E. -->
+            <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-6 mb-4">
+                <h4 class="flex items-center font-bold text-amber-800 mb-2 text-sm"><span class="mr-2">📌</span> 원저의 내용을 바탕으로 재구성한 사례 — 비교에서 자기 신뢰로</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    동료가 재즈곡 "L.O.V.E."를 멋지게 부르자 모두 감탄했습니다. 저자는 순간 <strong class="text-slate-800">'난 잘하는 게 뭐지?'</strong>라는 생각에 몰래 노래 학원에 등록해 그 곡을 연습했습니다. 그러나 발성 연습만 반복하다 '지금 내가 뭘 하고 있지?' 싶어 그만뒀습니다. 정작 필요했던 건 <strong class="text-slate-800">더 많은 인정이 아니라, 스스로에 대한 자기 신뢰</strong>였던 것입니다.
+                </p>
+            </div>
+
+            <!-- 건강한 유능감 6가지 질문 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-4">
+                <h4 class="font-bold text-brand-900 mb-3 text-sm">✅ '완벽해지기'보다 '원하는 것을 하기' — 스스로에게 던지는 6가지 질문</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-600">
+                    <p class="flex items-start"><span class="text-blue-500 mr-2 font-bold">1.</span>내가 진실로 원하고 하고 싶은가?</p>
+                    <p class="flex items-start"><span class="text-blue-500 mr-2 font-bold">2.</span>할 수 있는 만큼 하는가?</p>
+                    <p class="flex items-start"><span class="text-blue-500 mr-2 font-bold">3.</span>결과와 평가를 직면할 용기가 있는가?</p>
+                    <p class="flex items-start"><span class="text-blue-500 mr-2 font-bold">4.</span>그 결과에 슬퍼할 수 있는가?</p>
+                    <p class="flex items-start"><span class="text-blue-500 mr-2 font-bold">5.</span>배움으로 성장시킬 지혜가 있는가?</p>
+                    <p class="flex items-start"><span class="text-blue-500 mr-2 font-bold">6.</span>포기할 것에 열려 있는가?</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 rounded-xl px-5 py-4 text-sm text-slate-600 leading-relaxed">
+                💡 <strong class="text-brand-900">전환의 열쇠:</strong> "나는 노래는 못해도 글은 더 잘 써"(비교)가 아니라 <strong>"동료가 노래를 즐긴다면 나는 글을 쓰고 들어주는 게 즐거워"(각자의 가치)</strong>로 생각을 전환하는 것. 건강한 유능감은 외부 평가를 넘어 자신의 도전과 경험에 가치를 두는 것입니다.
+            </div>
+            <div class="mt-4 bg-blue-50/60 border border-blue-100 rounded-xl px-5 py-4 text-xs text-slate-600 leading-relaxed">
+                ※ 지속적인 우울감이나 일상 기능의 어려움은 의지나 대화 기술만으로 해결해야 할 문제가 아닙니다. 필요한 경우 전문적인 도움을 확인해 주세요.
+            </div>
+        </section>
+
+        <hr class="border-slate-200 my-12">
+
+        <!-- 실천 -->
+        <section class="mb-14 bg-slate-900 text-white rounded-3xl p-8 md:p-10 relative overflow-hidden shadow-xl">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.1),transparent)]"></div>
+            <div class="relative z-10">
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 text-blue-300 font-bold text-sm">✓</span>
+                    <h2 class="text-2xl font-bold text-white">이번 주, 감정을 보살피는 대화 실천</h2>
+                </div>
+                <p class="text-slate-400 mb-8 text-sm md:text-base leading-relaxed">네 가지 감정을 알아차리고 다르게 다뤄 보세요. (탭해서 체크할 수 있습니다.)</p>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">1. 화가 날 때 "너 때문"이 아니라 "나에게 무엇이 중요한가"를 물었다.</span></label>
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">2. 도움이 필요한 고민이 있다면, 신뢰할 수 있는 사람에게 내가 편안하게 느끼는 범위에서 상황과 필요한 지원을 설명해 보았다.</span></label>
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">3. 죄책감이 들 때 '할 수 없는 것'과 '할 수 있는 것'을 나눠 보았다.</span></label>
+                    <label class="flex items-start space-x-4 p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition"><input type="checkbox" class="w-5 h-5 rounded border-white/20 text-blue-500 focus:ring-offset-slate-900 focus:ring-blue-500 mt-0.5"><span class="text-slate-200 text-sm md:text-base">4. 남과 비교하는 대신 '내가 진짜 원하는 것'에 초점을 맞춰 보았다.</span></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 한 문장 -->
+        <section class="mb-14">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm">★</span>
+                <h2 class="text-2xl font-bold text-brand-900">기억할 한 문장</h2>
+            </div>
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-3xl p-8 relative shadow-sm">
+                <span class="absolute top-4 left-6 text-6xl text-blue-200/50 font-serif pointer-events-none">“</span>
+                <div class="relative z-10 text-center pt-4">
+                    <p class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed pl-4">
+                        "감정은 나에게 중요한 가치와 필요를 알려주는 신호입니다.<br>그 신호를 이해하고 존중을 지키며 표현할 때 연결의 대화가 시작됩니다."
+                    </p>
+                    <p class="text-sm text-slate-400 mt-4">— 「연결의 대화」 후속 학습자료 ② 핵심 메시지</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 다음 편 예고 -->
+        <div class="bg-slate-50 border border-slate-100 rounded-3xl p-8 md:p-10 text-center mb-12">
+            <p class="text-lg text-slate-700 leading-relaxed max-w-2xl mx-auto mb-6">
+                감정을 알아차리고 존중하는 방식으로 표현할 때, 감정은 서로의 관점과 필요를 이해하는 <strong>연결의 단서</strong>가 될 수 있습니다.
+            </p>
+            <div class="inline-block border-t border-slate-200 pt-6 px-10">
+                <p class="text-sm text-slate-500 mb-1">다음 편 예고</p>
+                <p class="text-base font-bold text-brand-900">시리즈 ③ &lt;연결을 만드는 세 가지 힘&gt; — 사랑·기여·협력</p>
+            </div>
+        </div>
+
+        <!-- 출처 -->
+        <section class="mb-16">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm">
+                <h3 class="flex items-center font-bold text-brand-900 mb-4 text-base"><span class="mr-2">📚</span> 출처 및 이용 안내</h3>
+                <dl class="space-y-2 text-sm text-slate-600">
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">원저</dt>
+                        <dd>『말이 통해야 일이 통한다 — 직장에서 사용하는 실용 대화법』, 박재연 저, 두란노서원 발행</dd>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">해당 편</dt>
+                        <dd>시리즈 ② — 원저 PART "Emotion"(감정을 다루는 대화)에 해당</dd>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">활용</dt>
+                        <dd>리더 대상 특강 &lt;연결의 대화&gt;의 시리즈 후속 학습 자료</dd>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:space-x-3">
+                        <dt class="font-semibold text-slate-800 md:w-24 shrink-0">저작권</dt>
+                        <dd>원저의 저작권은 저자 박재연 및 두란노서원에 있습니다.</dd>
+                    </div>
+                </dl>
+                <div class="mt-5 pt-5 border-t border-slate-100 text-xs text-slate-500 leading-relaxed space-y-2">
+                    <p>※ 본 자료는 원문을 그대로 옮기지 않고 <strong class="text-slate-700">핵심 논지와 사례를 요약·재구성한 사내 교육용 참고 자료</strong>입니다. 생성형 AI를 활용해 초안을 구성했으며, 사례와 대화는 이해를 돕기 위해 조직 상황에 맞게 간추리고 재구성했습니다. 세부 맥락과 정확한 내용은 원저를 확인해 주시기 바랍니다.</p>
+                    <p>※ 원저의 풍부한 사례 전문과 상세한 대화 연습은 <strong class="text-slate-700">책을 직접 구입해 읽어 보시기를 권장</strong>합니다.</p>
+                    <p>※ 본 자료는 사내 리더십 교육 목적의 내부 참고용으로만 활용하며, 외부 배포·전송·게시를 금합니다.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-100 border-t border-slate-200 py-8 px-6 text-center text-xs text-slate-400 leading-relaxed">
+        <p>본 자료는 특강 &lt;연결의 대화&gt; 시리즈 ②로, 『말이 통해야 일이 통한다』(박재연, 두란노서원)의 핵심을 재정리한 사내 교육용 자료입니다.</p>
+        <p class="mt-1">원저작권 © 박재연 · 두란노서원. 무단 복제·전송·배포를 금합니다.</p>
+        <p class="mt-3">© 2026 People &amp; Leadership Development Team. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
