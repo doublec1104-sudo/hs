@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallup StrengthsFinder 34 Dashboard</title>
+    <title>갤럽 강점 34(CliftonStrengths) 진단 자동 분석 대시보드</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Tesseract.js (OCR 기능) -->
+    <!-- Tesseract.js (OCR 엔진) -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        /* 4개 영역 테마 스타일 */
         .theme-executing { background-color: #fef2f2; border-color: #fca5a5; color: #991b1b; }
         .theme-influencing { background-color: #fff7ed; border-color: #fdba74; color: #9a3412; }
         .theme-relationship { background-color: #f0fdf4; border-color: #86efac; color: #166534; }
@@ -29,28 +31,17 @@
         .text-influencing { color: #ea580c; }
         .text-relationship { color: #16a34a; }
         .text-strategic { color: #2563eb; }
-
-        .tab-btn.active {
-            border-bottom: 3px solid #2563eb;
-            color: #2563eb;
-            font-weight: 700;
-        }
-        
-        /* Drag and Drop Custom Styles */
-        .draggable-item { cursor: grab; }
-        .draggable-item:active { cursor: grabbing; }
-        .draggable-item.ghost { opacity: 0.4; background-color: #e2e8f0; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col pb-12">
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-slate-800 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3">
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-slate-800 text-white px-5 py-3.5 rounded-xl shadow-xl flex items-center gap-3">
         <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
         <span id="toast-msg" class="text-sm font-medium">알림 메시지</span>
     </div>
 
-    <!-- Top Navigation Header -->
+    <!-- Header Navigation -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -58,65 +49,57 @@
                     G
                 </div>
                 <div>
-                    <h1 class="font-bold text-slate-800 text-lg leading-tight">CliftonStrengths 34</h1>
-                    <p class="text-xs text-slate-500">핵심인재 강점 개발 대시보드</p>
+                    <h1 class="font-bold text-slate-800 text-lg leading-tight">CliftonStrengths 34 Auto Analyzer</h1>
+                    <p class="text-xs text-slate-500">갤럽 강점 34 자동 진단 및 분석 플랫폼</p>
                 </div>
             </div>
 
-            <!-- 프로필 선택 / 워크숍 멤버 스위처 -->
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-slate-100 rounded-lg p-1 border border-slate-200">
-                    <span class="text-xs font-semibold text-slate-600 pl-2"><i class="fa-solid fa-users text-blue-500 mr-1"></i>멤버 선택:</span>
-                    <select id="member-select" onchange="switchMemberProfile(this.value)" class="bg-white text-slate-800 text-sm font-bold rounded-md px-3 py-1.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                        <option value="current">내 강점 프로필</option>
-                        <!-- 13명 멤버 추가 예시 -->
-                        <option value="member_1">멤버 01 (예시)</option>
-                        <option value="member_2">멤버 02 (예시)</option>
-                    </select>
-                </div>
-
-                <button onclick="openModal('profile-modal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition shadow flex items-center gap-1.5">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>강점 순위 설정/OCR</span>
+            <div class="flex items-center gap-2">
+                <button onclick="openModal('profile-modal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>강점 이미지 업로드 / 설정</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 flex-1 w-full">
-        <!-- 상단 요약 카드 영역 -->
+        
+        <!-- Top Summary Cards (4개 영역 분포) -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-2 h-full bg-executing"></div>
                 <div class="text-xs font-semibold text-slate-400 mb-1">실행력 (Executing)</div>
                 <div class="text-2xl font-bold text-slate-800" id="count-executing">0개</div>
-                <p class="text-xs text-slate-500 mt-2">Top 10 중 비중: <span id="percent-executing" class="font-bold text-slate-700">0%</span></p>
+                <p class="text-xs text-slate-500 mt-2">Top 10 내 비중: <span id="percent-executing" class="font-bold text-slate-700">0%</span></p>
             </div>
             <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-2 h-full bg-influencing"></div>
                 <div class="text-xs font-semibold text-slate-400 mb-1">영향력 (Influencing)</div>
                 <div class="text-2xl font-bold text-slate-800" id="count-influencing">0개</div>
-                <p class="text-xs text-slate-500 mt-2">Top 10 중 비중: <span id="percent-influencing" class="font-bold text-slate-700">0%</span></p>
+                <p class="text-xs text-slate-500 mt-2">Top 10 내 비중: <span id="percent-influencing" class="font-bold text-slate-700">0%</span></p>
             </div>
             <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-2 h-full bg-relationship"></div>
                 <div class="text-xs font-semibold text-slate-400 mb-1">관계누적 (Relationship)</div>
                 <div class="text-2xl font-bold text-slate-800" id="count-relationship">0개</div>
-                <p class="text-xs text-slate-500 mt-2">Top 10 중 비중: <span id="percent-relationship" class="font-bold text-slate-700">0%</span></p>
+                <p class="text-xs text-slate-500 mt-2">Top 10 내 비중: <span id="percent-relationship" class="font-bold text-slate-700">0%</span></p>
             </div>
             <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-2 h-full bg-strategic"></div>
                 <div class="text-xs font-semibold text-slate-400 mb-1">전략적 사고 (Strategic)</div>
                 <div class="text-2xl font-bold text-slate-800" id="count-strategic">0개</div>
-                <p class="text-xs text-slate-500 mt-2">Top 10 중 비중: <span id="percent-strategic" class="font-bold text-slate-700">0%</span></p>
+                <p class="text-xs text-slate-500 mt-2">Top 10 내 비중: <span id="percent-strategic" class="font-bold text-slate-700">0%</span></p>
             </div>
         </div>
 
-        <!-- 메인 콘텐츠 영역 (Top 10 및 34 전체) -->
+        <!-- Main Dashboard Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- 좌측: Top 5 & Top 10 시각화 -->
+            
+            <!-- Left Side: Top 5 & Top 10 상세 리스트 -->
             <div class="lg:col-span-2 space-y-6">
+                
                 <!-- Top 5 대표 강점 -->
                 <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                     <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -124,107 +107,127 @@
                         Top 5 대표 강점 (Signature Themes)
                     </h2>
                     <div id="top5-container" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
-                        <!-- JS Dynamic Insertion -->
+                        <!-- Dynamic JavaScript Render -->
                     </div>
                 </div>
 
-                <!-- Top 10 상세 목록 -->
+                <!-- Top 10 상세 포트폴리오 및 가이드 -->
                 <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                     <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center justify-between">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-list-ol text-blue-500"></i>
-                            Top 10 주요 강점 포트폴리오
+                            Top 10 강점 상세 리포트
                         </span>
-                        <span class="text-xs font-normal text-slate-500">1위~10위 상세 분석</span>
+                        <span class="text-xs text-slate-400">1위 ~ 10위 상세 분석</span>
                     </h2>
                     <div id="top10-container" class="space-y-3">
-                        <!-- JS Dynamic Insertion -->
+                        <!-- Dynamic JavaScript Render -->
                     </div>
                 </div>
-            </div>
 
-            <!-- 우측: 강점 영역 분포 차트 및 맹점/시너지 안내 -->
-            <div class="space-y-6">
+                <!-- 34개 전체 순위 그리드 -->
                 <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                     <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-indigo-500"></i>
-                        4개 영역 분포
+                        <i class="fa-solid fa-layer-group text-slate-600"></i>
+                        34개 전체 강점 프로필 순위 지도
                     </h2>
+                    <div id="all34-container" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                        <!-- Dynamic JavaScript Render -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Side: 영역 차트 & 분석 종합 인사이트 -->
+            <div class="space-y-6">
+                
+                <!-- 도넛 차트 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                    <h2 class="text-base font-bold text-slate-800 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-indigo-500"></i>
+                        강점 영역 분포 비율
+                    </h2>
+                    <p class="text-xs text-slate-400 mb-4">상위 10개 강점의 영역별 구성</p>
                     <div class="w-full h-64 flex items-center justify-center">
                         <canvas id="domainChart"></canvas>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl p-6 text-white shadow-md">
-                    <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
-                        워크숍 가이드
-                    </h3>
-                    <p class="text-xs text-indigo-200 leading-relaxed mb-4">
-                        상단 드롭다운을 이용해 워크숍 동료의 프로필을 열람하고, 서로의 Top 5 강점을 바탕으로 어떤 협업 시너지를 낼 수 있는지 논의해보세요.
-                    </p>
-                    <button onclick="openModal('profile-modal')" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-sm">
-                        내 강점 순위 다시 설정하기
-                    </button>
+                <!-- 자동 종합 진단 리포트 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                    <h2 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i>
+                        자동 진단 요약
+                    </h2>
+                    <div id="analysis-summary-box" class="text-xs text-slate-600 leading-relaxed space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <!-- Dynamic Summary -->
+                    </div>
                 </div>
+
             </div>
         </div>
     </main>
 
-    <!-- 강점 프로필 / OCR 모달 -->
+    <!-- 강점 프로필 설정 및 OCR 모달 -->
     <div id="profile-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
                     <i class="fa-solid fa-sliders text-blue-600"></i>
-                    강점 프로필 순위 설정
+                    강점 34개 입력 및 이미지 OCR 자동인식
                 </h3>
                 <button onclick="closeModal('profile-modal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
 
             <!-- Modal Body -->
             <div class="p-6 overflow-y-auto flex-1 space-y-6">
-                <!-- 이미지 업로드 / OCR 섹션 -->
-                <div class="bg-blue-50/60 border-2 border-dashed border-blue-200 rounded-xl p-5 text-center">
-                    <i class="fa-solid fa-file-arrow-up text-3xl text-blue-500 mb-2"></i>
-                    <h4 class="text-sm font-bold text-slate-800">갤럽 결과지 이미지/PDF 업로드 (OCR)</h4>
-                    <p class="text-xs text-slate-500 mt-1 mb-3">결과 리포트 스크린샷을 첨부하면 34개 순위를 자동으로 인식합니다.</p>
+                <!-- 이미지 파일 업로드 (OCR) -->
+                <div class="bg-blue-50/60 border-2 border-dashed border-blue-200 rounded-xl p-6 text-center">
+                    <i class="fa-solid fa-file-arrow-up text-4xl text-blue-500 mb-2"></i>
+                    <h4 class="text-sm font-bold text-slate-800">갤럽 결과 리포트 이미지 업로드</h4>
+                    <p class="text-xs text-slate-500 mt-1 mb-4">갤럽 진단 결과 34개 순위가 적힌 캡처/이미지 파일을 선택하면 자동으로 34개 강점을 인식합니다.</p>
+                    
                     <input type="file" id="ocr-file-input" accept="image/*" class="hidden" onchange="handleOCRFileUpload(event)">
-                    <button onclick="document.getElementById('ocr-file-input').click()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-sm transition">
-                        <i class="fa-solid fa-camera mr-1"></i> 이미지 파일 선택
+                    <button onclick="document.getElementById('ocr-file-input').click()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm transition">
+                        <i class="fa-solid fa-camera mr-1.5"></i> 이미지 파일 선택
                     </button>
-                    <!-- Loading Status -->
+
+                    <!-- Loading Indicator -->
                     <div id="ocr-loading" class="hidden mt-4 text-xs font-bold text-blue-600 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                        <span id="ocr-status-text">이미지 분석 중...</span>
+                        <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
+                        <span id="ocr-status-text">OCR 이미지를 분석 중입니다...</span>
                     </div>
                 </div>
 
-                <!-- 34개 순위 텍스트 직접 선택/조정 -->
+                <!-- 현재 인식된 34개 순위 검토/조정 -->
                 <div>
-                    <h4 class="text-sm font-bold text-slate-800 mb-2">현재 인식된 34개 순위 목록 (직접 확인)</h4>
-                    <div id="manual-order-list" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 bg-slate-100 rounded-xl border border-slate-200 text-xs">
-                        <!-- JS Generated -->
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-bold text-slate-800">현재 인식된 34개 순위 목록</h4>
+                        <span class="text-xs text-slate-400">자동 인식 후 순위 순서 검토</span>
+                    </div>
+                    <div id="manual-order-list" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-56 overflow-y-auto p-3 bg-slate-100 rounded-xl border border-slate-200 text-xs">
+                        <!-- JS Dynamic Item Insertion -->
                     </div>
                 </div>
             </div>
 
-            <!-- Modal Footer (1번 해결 포인트: 적용하기 클릭 시 수록) -->
+            <!-- Modal Footer (적용하기 클릭 시 새로고침 연동) -->
             <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-3">
-                <button onclick="closeModal('profile-modal')" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-lg transition">취소</button>
-                <button onclick="applyProfileChanges()" class="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition flex items-center gap-1.5">
+                <button onclick="closeModal('profile-modal')" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition">취소</button>
+                <button onclick="applyProfileChanges()" class="px-5 py-2.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow transition flex items-center gap-1.5">
                     <i class="fa-solid fa-check"></i>
-                    <span>적용하기</span>
+                    <span>적용 및 대시보드 새로고침</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript logic -->
+    <!-- JavaScript Application Core Logic -->
     <script>
-        // 34개 갤럽 강점 테마 기본 정의
+        // 갤럽 34개 강점 테마 데이터베이스
         const STRENGTH_MASTER = [
+            // 실행력 (Executing) - Red
             { id: 'achiever', name: '성취', domain: 'executing', desc: '끊임없이 무언가를 이루어내려는 강한 실행력과 스테미너를 보유함.' },
             { id: 'arranger', name: '정리', domain: 'executing', desc: '다양한 변수를 최적으로 조직화하고 배치하는 능력이 탁월함.' },
             { id: 'belief', name: '신념', domain: 'executing', desc: '변하지 않는 핵심 가치를 바탕으로 명확한 목적의식을 가짐.' },
@@ -235,15 +238,17 @@
             { id: 'responsibility', name: '책임', domain: 'executing', desc: '한 번 약속한 일은 끝까지 완수하려는 강한 주인 의식.' },
             { id: 'restorative', name: '복원', domain: 'executing', desc: '문제의 원인을 파악하고 이를 정상으로 해결하는 데 뛰어남.' },
             
+            // 영향력 (Influencing) - Orange
             { id: 'activator', name: '주도성', domain: 'influencing', desc: '생각을 즉시 행동으로 옮겨 추진력을 만들어냄.' },
             { id: 'command', name: '통제', domain: 'influencing', desc: '명확한 주도권을 쥐고 상황을 이끌어가며 결단력이 있음.' },
             { id: 'communication', name: '커뮤니케이션', domain: 'influencing', desc: '아이디어를 말과 글을 통해 매력적으로 표현함.' },
             { id: 'competition', name: '경쟁', domain: 'influencing', desc: '다른 사람과의 비교를 통해 승리하고 최고가 되려는 동기.' },
             { id: 'maximizer', name: '최상용', domain: 'influencing', desc: '우수함을 뛰어넘어 탁월함으로 끌어올리는 데 집중.' },
-            { id: 'significance', name: '자기확신', domain: 'influencing', desc: '자신의 결정과 능력에 대한 강한 확신과 독립성.' },
+            { id: 'self_assurance', name: '자기확신', domain: 'influencing', desc: '자신의 결정과 능력에 대한 강한 확신과 독립성.' },
+            { id: 'significance', name: '존재감', domain: 'influencing', desc: '큰 영향력을 미치고 인정받고자 하는 동기.' },
             { id: 'woo', name: '사교성', domain: 'influencing', desc: '새로운 사람을 만나 관계를 맺고 승인받는 것을 즐김.' },
-            { id: 'significance_2', name: '존재감', domain: 'influencing', desc: '큰 영향력을 미치고 인정받고자 하는 동기.' },
 
+            // 관계누적 (Relationship Building) - Green
             { id: 'adaptability', name: '적응성', domain: 'relationship', desc: '유연하게 현재에 집중하며 변화에 빠르게 대응함.' },
             { id: 'connectedness', name: '연계성', domain: 'relationship', desc: '모든 것과 모든 사람은 이유가 있어서 연결되어 있다고 믿음.' },
             { id: 'developer', name: '개발', domain: 'relationship', desc: '다른 사람의 잠재력을 알아보고 성장을 돕는 데 보람을 느낌.' },
@@ -254,6 +259,7 @@
             { id: 'positivity', name: '긍정', domain: 'relationship', desc: '열정과 전염성 있는 유쾌함으로 주변을 밝게 만듦.' },
             { id: 'relator', name: '친밀', domain: 'relationship', desc: '깊고 진실된 인간관계를 선호하고 신뢰를 중시함.' },
 
+            // 전략적 사고 (Strategic Thinking) - Blue
             { id: 'analytical', name: '분석', domain: 'strategic', desc: '자료와 데이터의 원인 관계와 증거를 객관적으로 탐구.' },
             { id: 'context', name: '회상', domain: 'strategic', desc: '과거의 역사와 사례를 통해 현재와 미래를 이해함.' },
             { id: 'futuristic', name: '미래지향', domain: 'strategic', desc: '미래의 가능성과 비전을 생생하게 그리며 사람들에게 영감을 줌.' },
@@ -264,7 +270,7 @@
             { id: 'strategic', name: '전략', domain: 'strategic', desc: '복잡한 상황에서 최선의 대안과 패스를 신속하게 찾아냄.' }
         ];
 
-        // 기본 34개 순위 초기값
+        // 기본 34개 순위 예시 데이터
         const DEFAULT_ORDER = [
             'achiever', 'learner', 'responsibility', 'strategic', 'relator',
             'analytical', 'focus', 'arranger', 'developer', 'individualization',
@@ -272,10 +278,10 @@
             'command', 'futuristic', 'positivity', 'discipline', 'empathy',
             'harmony', 'connectedness', 'deliberative', 'restorative', 'belief',
             'consistency', 'adaptability', 'competition', 'intellection', 'includer',
-            'context', 'woo', 'significance', 'significance_2'
+            'context', 'woo', 'self_assurance', 'significance'
         ];
 
-        // 상태 관리
+        // 애플리케이션 상태
         let state = {
             userOrder: [...DEFAULT_ORDER],
             tempManualOrder: [...DEFAULT_ORDER]
@@ -289,22 +295,26 @@
             if (saved) {
                 try {
                     state.userOrder = JSON.parse(saved);
-                } catch(e) {}
+                } catch(e) {
+                    state.userOrder = [...DEFAULT_ORDER];
+                }
             }
             state.tempManualOrder = [...state.userOrder];
             refreshDashboard();
         });
 
-        // 대시보드 화면 갱신
+        // 대시보드 전체 UI 새로고침/갱신
         function refreshDashboard() {
             renderTop5();
             renderTop10();
+            render34All();
             renderSummaryCards();
             renderDomainChart();
+            renderAnalysisSummary();
             renderManualOrderList();
         }
 
-        // Top 5 렌더링
+        // Top 5 카드 렌더링
         function renderTop5() {
             const container = document.getElementById('top5-container');
             container.innerHTML = '';
@@ -314,22 +324,22 @@
                 const domainColor = getDomainClass(item.domain);
 
                 const card = document.createElement('div');
-                card.className = `p-4 rounded-xl border ${domainColor.theme} flex flex-col justify-between shadow-sm hover:shadow transition`;
+                card.className = `p-4 rounded-xl border ${domainColor.theme} flex flex-col justify-between shadow-xs`;
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-black px-2 py-0.5 rounded-md bg-white/80 shadow-xs">${index + 1}위</span>
+                            <span class="text-xs font-black px-2 py-0.5 rounded bg-white/80 shadow-2xs">${index + 1}위</span>
                             <i class="fa-solid fa-star text-amber-400 text-xs"></i>
                         </div>
                         <h3 class="font-bold text-base mb-1">${item.name}</h3>
-                        <p class="text-xs opacity-80 leading-relaxed">${item.desc}</p>
+                        <p class="text-xs opacity-85 leading-relaxed">${item.desc}</p>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Top 10 렌더링
+        // Top 10 상세 목록 렌더링
         function renderTop10() {
             const container = document.getElementById('top10-container');
             container.innerHTML = '';
@@ -339,22 +349,42 @@
                 const domainColor = getDomainClass(item.domain);
 
                 const row = document.createElement('div');
-                row.className = `p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between shadow-2xs hover:border-blue-300 transition`;
+                row.className = `p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between shadow-2xs`;
                 row.innerHTML = `
                     <div class="flex items-center gap-3">
                         <span class="w-7 h-7 rounded-lg bg-slate-100 font-bold text-slate-700 text-xs flex items-center justify-center">${index + 1}</span>
                         <div>
                             <span class="font-bold text-sm text-slate-800 mr-2">${item.name}</span>
-                            <span class="text-xs px-2 py-0.5 rounded-md ${domainColor.theme} font-semibold">${getDomainKorName(item.domain)}</span>
+                            <span class="text-xs px-2 py-0.5 rounded ${domainColor.theme} font-semibold">${getDomainKorName(item.domain)}</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-500 hidden sm:block max-w-sm truncate">${item.desc}</p>
+                    <p class="text-xs text-slate-500 hidden sm:block max-w-xs truncate">${item.desc}</p>
                 `;
                 container.appendChild(row);
             });
         }
 
-        // 상단 4대 영역 카운트
+        // 34개 전체 강점 지도 렌더링
+        function render34All() {
+            const container = document.getElementById('all34-container');
+            container.innerHTML = '';
+
+            state.userOrder.forEach((id, index) => {
+                const item = STRENGTH_MASTER.find(s => s.id === id) || { name: id, domain: 'strategic' };
+                const domainColor = getDomainClass(item.domain);
+                const isTop10 = index < 10;
+
+                const div = document.createElement('div');
+                div.className = `p-2 rounded-lg border text-center text-xs ${isTop10 ? domainColor.theme + ' font-bold' : 'bg-slate-50 border-slate-200 text-slate-500'}`;
+                div.innerHTML = `
+                    <div class="text-[10px] opacity-60 mb-0.5">${index + 1}</div>
+                    <div class="truncate">${item.name}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // 영역별 수량 카운트 요약
         function renderSummaryCards() {
             const top10 = state.userOrder.slice(0, 10);
             const counts = { executing: 0, influencing: 0, relationship: 0, strategic: 0 };
@@ -370,7 +400,7 @@
             });
         }
 
-        // 차트 렌더링
+        // 도넛 차트
         function renderDomainChart() {
             const top10 = state.userOrder.slice(0, 10);
             const counts = { executing: 0, influencing: 0, relationship: 0, strategic: 0 };
@@ -385,21 +415,52 @@
             domainChartObj = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['실행력', '영향력', '관계누적', '전략적사고'],
+                    labels: ['실행력', '영향력', '관계누적', '전략적 사고'],
                     datasets: [{
                         data: [counts.executing, counts.influencing, counts.relationship, counts.strategic],
-                        backgroundColor: ['#ef4444', '#f97316', '#22c55e', '#3b82f6']
+                        backgroundColor: ['#ef4444', '#f97316', '#22c55e', '#3b82f6'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } }
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
                 }
             });
         }
 
-        // 수동 순위 설정 렌더링
+        // 자동 진단 인사이트 렌더링
+        function renderAnalysisSummary() {
+            const top5 = state.userOrder.slice(0, 5).map(id => {
+                const item = STRENGTH_MASTER.find(s => s.id === id);
+                return item ? item.name : '';
+            }).join(', ');
+
+            const top10 = state.userOrder.slice(0, 10);
+            const counts = { executing: 0, influencing: 0, relationship: 0, strategic: 0 };
+            top10.forEach(id => {
+                const item = STRENGTH_MASTER.find(s => s.id === id);
+                if (item) counts[item.domain]++;
+            });
+
+            let dominantDomain = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            let domainKor = getDomainKorName(dominantDomain);
+
+            const summaryBox = document.getElementById('analysis-summary-box');
+            summaryBox.innerHTML = `
+                <p><strong>대표 강점(Top 5):</strong> ${top5}</p>
+                <p><strong>주요 우세 영역:</strong> Top 10 중 <span class="font-bold text-blue-600">${domainKor}</span> 영역이 ${counts[dominantDomain]}개로 가장 높게 나타납니다.</p>
+                <p class="text-[11px] text-slate-500 border-t border-slate-200 pt-2 mt-2">
+                    💡 <strong>활용 팁:</strong> 업무 수행 시 ${top5.split(',')[0]} 및 ${top5.split(',')[1]} 강점을 적극 활용할 때 가장 뛰어난 몰입과 성과를 창출할 수 있습니다.
+                </p>
+            `;
+        }
+
+        // 모달 내 수동 순위 목록 렌더링
         function renderManualOrderList() {
             const container = document.getElementById('manual-order-list');
             container.innerHTML = '';
@@ -409,14 +470,14 @@
                 const div = document.createElement('div');
                 div.className = 'bg-white p-2 rounded border border-slate-200 flex items-center justify-between';
                 div.innerHTML = `
-                    <span class="font-bold text-slate-500 w-5">${idx + 1}.</span>
+                    <span class="font-bold text-slate-400 w-5">${idx + 1}.</span>
                     <span class="font-semibold text-slate-800 truncate flex-1">${item.name}</span>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // [1번 수정 주요 해결 포인트] 이미지 업로드 / OCR 처리
+        // OCR 이미지 업로드 분석 핸들러
         async function handleOCRFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -424,7 +485,7 @@
             const loadingEl = document.getElementById('ocr-loading');
             const statusEl = document.getElementById('ocr-status-text');
             loadingEl.classList.remove('hidden');
-            statusEl.innerText = "Tesseract OCR 분석 엔진 가동 중...";
+            statusEl.innerText = "Tesseract OCR 엔진 초기화 중...";
 
             try {
                 const result = await Tesseract.recognize(file, 'kor+eng', {
@@ -436,63 +497,62 @@
                 });
 
                 const text = result.data.text;
-                statusEl.innerText = "강점 키워드 매칭 중...";
+                statusEl.innerText = "갤럽 강점 키워드 매칭 중...";
 
-                // OCR 텍스트 기반 매칭
+                // 한국어 강점 이름 34개 찾기
                 let matched = [];
                 STRENGTH_MASTER.forEach(item => {
-                    if (text.includes(item.name)) {
+                    if (text.includes(item.name) && !matched.includes(item.id)) {
                         matched.push(item.id);
                     }
                 });
 
                 if (matched.length > 0) {
-                    // 미인식 항목은 기존 순서 유지 연결
+                    // 미인식 항목은 기존 순위 유지하며 뒤에 배치
                     const remaining = state.tempManualOrder.filter(id => !matched.includes(id));
                     state.tempManualOrder = [...matched, ...remaining];
                     renderManualOrderList();
-                    showToast(`${matched.length}개 강점을 OCR 인식하였습니다!`, 'success');
+                    showToast(`${matched.length}개 강점을 이미지에서 성공적으로 인식하였습니다!`);
                 } else {
-                    showToast('인식된 강점 명칭이 없습니다. 선명한 이미지를 첨부해주세요.', 'info');
+                    showToast('이미지에서 강점 이름을 찾지 못했습니다. 글자가 선명한 리포트를 업로드해주세요.', 'info');
                 }
             } catch (err) {
                 console.error(err);
-                showToast('OCR 분석 중 오류가 발생했습니다.', 'error');
+                showToast('OCR 이미지 분석 중 오류가 발생했습니다.', 'error');
             } finally {
                 loadingEl.classList.add('hidden');
             }
         }
 
-        // [1번 수정 주요 해결 포인트] '적용하기' 버튼 클릭 시 연동
+        // [핵심] '적용 및 새로고침' 버튼 클릭 시 대시보드 새로고침
         function applyProfileChanges() {
             if (state.tempManualOrder && state.tempManualOrder.length === 34) {
                 state.userOrder = [...state.tempManualOrder];
+                // 로컬 스토리지에 새로고침 저장
                 localStorage.setItem('gallup_user_order', JSON.stringify(state.userOrder));
+                
+                // 대시보드 UI 전체 즉시 새로고침 및 모달 닫기
                 refreshDashboard();
                 closeModal('profile-modal');
-                showToast('강점 프로필이 성공적으로 업데이트되었습니다!');
+                showToast('대시보드가 새 강점 프로필로 성공적으로 새로고침되었습니다!');
             } else {
-                showToast('34개 순위를 모두 확인해 주세요.', 'info');
+                showToast('34개 순위를 모두 지정해 주셔야 합니다.', 'info');
             }
         }
 
-        // 모달 열기/닫기
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
+        // Modal Control
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // 알림 토스트
+        // Toast Notification
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
             toast.classList.remove('translate-x-full');
-            setTimeout(() => toast.classList.add('translate-x-full'), 3000);
+            setTimeout(() => toast.classList.add('translate-x-full'), 3200);
         }
 
-        // 헬퍼 함수
+        // Helper Functions
         function getDomainClass(domain) {
             switch(domain) {
                 case 'executing': return { theme: 'theme-executing' };
@@ -506,21 +566,8 @@
                 case 'executing': return '실행력';
                 case 'influencing': return '영향력';
                 case 'relationship': return '관계누적';
-                default: return '전략적사고';
+                default: return '전략적 사고';
             }
-        }
-
-        // 워크숍 다른 멤버 스위칭 예시 함수
-        function switchMemberProfile(val) {
-            if (val === 'current') {
-                const saved = localStorage.getItem('gallup_user_order');
-                state.userOrder = saved ? JSON.parse(saved) : [...DEFAULT_ORDER];
-            } else {
-                // 향후 13명 데이터가 연결될 때 동작
-                showToast(`선택한 멤버(${val})의 데이터 리포트로 전환됩니다.`);
-            }
-            state.tempManualOrder = [...state.userOrder];
-            refreshDashboard();
         }
     </script>
 </body>
