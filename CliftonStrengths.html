@@ -144,7 +144,7 @@
                 </button>
                 <button onclick="switchTab('blindspots')" id="nav-blindspots" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-shield-halved w-5 text-center"></i>
-                    <span>맹점 & 하위 테마 보완</span>
+                    <span>맹점 & 비선호 테마 관리</span>
                 </button>
                 <button onclick="switchTab('prompts')" id="nav-prompts" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-robot w-5 text-center"></i>
@@ -315,8 +315,8 @@
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
                         <div>
-                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">맹점(Blind Spots) 및 하위 테마 보완 솔루션</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">약점을 억지로 고치려 애쓰지 마세요. 상위 강점으로 하위 테마를 우회 커버하는 지혜로운 전략입니다.</p>
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">맹점(Blind Spots) 및 비선호 테마 관리</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">낮은 순위의 테마를 무조건 약점으로 간주할 필요는 없습니다. 자연스럽게 덜 사용하는 테마는 상위 강점·협업·필요한 스킬을 활용해 관리하세요.</p>
                         </div>
                     </div>
                 </div>
@@ -844,14 +844,14 @@
 
                 <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3">
                     <div class="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-sm">
-                        <i class="fa-solid fa-battery-quarter"></i> 주의 2: 하위 테마(${bottom3[2].name} #${bottom3[2].rank}, ${bottom3[1].name} #${bottom3[1].rank}) 보완
+                        <i class="fa-solid fa-battery-quarter"></i> 주의 2: 비선호 테마(${bottom3[2].name} #${bottom3[2].rank}, ${bottom3[1].name} #${bottom3[1].rank}) 관리
                     </div>
                     <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                        ${bottom3[2].name} 및 ${bottom3[1].name} 테마가 하위권에 있어 이 방식의 직진 스타일은 스트레스를 유발할 수 있습니다.
+                        ${bottom3[2].name} 및 ${bottom3[1].name} 테마는 상대적으로 자연스럽게 사용하는 방식이 아닐 수 있습니다. 업무에서 필요할 때만 전략적으로 관리하면 됩니다.
                     </p>
                     <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 space-y-1">
                         <div class="font-bold text-blue-600 dark:text-blue-400"><i class="fa-solid fa-key mr-1"></i> 우회 전략:</div>
-                        <p>"하위 테마를 억지로 올리려 하지 말고, 상위 강점인 <strong>${top10[0].name}</strong>와 <strong>${top10[2].name}</strong>를 활용해 동일한 결과를 만들어내세요."</p>
+                        <p>"하위 테마를 무조건 높이려 하기보다, 상위 강점인 <strong>${top10[0].name}</strong>와 <strong>${top10[2].name}</strong>를 활용하거나 협업·스킬로 필요한 결과를 만들어내세요."</p>
                     </div>
                 </div>
             `;
@@ -937,7 +937,7 @@ Top 10: ${top10Names} (하위 테마: ${bottomNames})
                     <p>${top10}</p>
                 </div>
                 <div class="p-3 bg-orange-50 dark:bg-orange-950/40 rounded-xl space-y-1">
-                    <p class="font-bold text-orange-800 dark:text-orange-300">하위 테마 (우회 관리 필요):</p>
+                    <p class="font-bold text-orange-800 dark:text-orange-300">비선호 테마 (필요 시 관리):</p>
                     <p>${bottom}</p>
                 </div>
             `;
