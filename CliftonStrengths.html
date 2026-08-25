@@ -1294,20 +1294,35 @@ Top 10: ${top10Names} (하위 테마: ${bottomNames})
         }
 
         function applyProfileChanges() {
-            const isCompleteOrder = state.tempManualOrder.length === 34
-                && state.tempManualOrder.every(Boolean)
-                && new Set(state.tempManualOrder).size === 34;
+            const order = Array.isArray(state.tempManualOrder) ? [...state.tempManualOrder] : [];
+            const isCompleteOrder = order.length === 34
+                && order.every(Boolean)
+                && new Set(order).size === 34;
 
-            if (state.tempManualOrder.length === 34 && isCompleteOrder) {
-                state.userOrder = [...state.tempManualOrder];
-            } else if (state.tempManualOrder.length === 34) {
-                showToast('34개 순위가 모두 채워진 뒤 적용해주세요. 누락된 순위는 직접 편집에서 수정할 수 있습니다.', 'info');
+            if (!isCompleteOrder) {
+                showToast('1~34위가 모두 인식되어야 적용할 수 있습니다. 빨간색으로 표시된 순위는 직접 편집에서 확인해주세요.', 'info');
                 return;
             }
-            localStorage.setItem('gallup_user_order', JSON.stringify(state.userOrder));
-            refreshDashboard();
-            closeModal('profile-modal');
-            showToast("강점 프로필이 성공적으로 변경되었습니다!");
+
+            try {
+                // 1) 메모리 상태 갱신
+                state.userOrder = order;
+
+                // 2) 브라우저에 저장
+                localStorage.setItem('gallup_user_order', JSON.stringify(order));
+
+                // 3) 모달을 먼저 닫고 성공 메시지 표시
+                closeModal('profile-modal');
+                showToast('강점 프로필이 적용되었습니다. 잠시 후 새로고침합니다!');
+
+                // 4) GitHub Pages에서도 확실히 새 상태를 다시 읽도록 페이지를 실제 새로고침
+                setTimeout(() => {
+                    window.location.reload();
+                }, 250);
+            } catch (err) {
+                console.error('프로필 적용 오류:', err);
+                showToast('프로필 저장에 실패했습니다. 브라우저 저장소를 확인해주세요.', 'info');
+            }
         }
 
         function openModal(id) {
