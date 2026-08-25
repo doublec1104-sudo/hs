@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>갤럽 강점(CliftonStrengths) 커리어 & 목표 달성 대시보드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tesseract OCR CDN for Image Analysis -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        relationship: '#2563eb', // 파란색 (대인관계 구축)
+                        executing: '#9333ea',    // 보라색 (실행력)
+                        strategic: '#16a34a',    // 초록색 (전략적 사고)
+                        influencing: '#ea580c',  // 주황색 (영향력)
+                        gallupBg: '#0f172a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-gem text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-tight text-slate-900 dark:text-white">Gallup Strengths 34 Navigator</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">나만의 강점 기반 성과 & 커리어 성장 대시보드</p>
+                </div>
+            </div>
+
+            <!-- Header Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Change / Register Profile Button -->
+                <button onclick="openModal('profile-modal')" class="flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 transition">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span class="hidden xs:inline">강점 리포트 등록/변경</span>
+                    <span class="xs:hidden">프로필 변경</span>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun"></i>
+                </button>
+
+                <button onclick="openModal('summary-modal')" class="hidden md:flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    진단 요약
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Navigation / Profile Card (3 cols) -->
+        <aside class="lg:col-span-3 space-y-6">
+            <!-- Profile Card -->
+            <div class="glass-card rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div id="profile-avatar" class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold flex items-center justify-center text-xl shadow">
+                        ME
+                    </div>
+                    <div>
+                        <h2 id="profile-title" class="font-bold text-slate-900 dark:text-white">나의 강점 프로필</h2>
+                        <span id="profile-type-tag" class="inline-block px-2 py-0.5 text-[11px] font-semibold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full mt-0.5">
+                            대인관계 구축형 리더
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Domain Distribution Breakdown -->
+                <div id="profile-domain-counts" class="pt-4 space-y-2.5">
+                    <!-- Dynamic Top 10 domain counts loaded via JS -->
+                </div>
+
+                <!-- Strategic Summary Badge -->
+                <div class="mt-5 p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border border-slate-200/60 dark:border-slate-700/50">
+                    <p class="font-semibold text-slate-800 dark:text-slate-200 mb-1"><i class="fa-solid fa-bullseye text-blue-500 mr-1"></i> 핵심 정체성:</p>
+                    <p id="profile-identity-summary">
+                        "상위 테마들의 시너지를 기반으로 조직에 안정성과 방향성을 제공하는 강점 리더"
+                    </p>
+                </div>
+
+                <button onclick="openModal('profile-modal')" class="w-full mt-4 py-2.5 rounded-xl border border-dashed border-blue-400 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-pen-to-square"></i> 강점 순위 변경 / 이미지 업로드
+                </button>
+            </div>
+
+            <!-- Tab Navigation Menu -->
+            <nav class="glass-card rounded-2xl p-2 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition bg-blue-600 text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>강점 대시보드 & 분석</span>
+                </button>
+                <button onclick="switchTab('journal')" id="nav-journal" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-pen-to-square w-5 text-center"></i>
+                    <span>오늘의 강점 성찰 일지</span>
+                </button>
+                <button onclick="switchTab('blindspots')" id="nav-blindspots" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                    <span>맹점 & 하위 테마 보완</span>
+                </button>
+                <button onclick="switchTab('prompts')" id="nav-prompts" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-robot w-5 text-center"></i>
+                    <span>AI 강점 성장 코치</span>
+                </button>
+                <button onclick="switchTab('all-strengths')" id="nav-all-strengths" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-layer-group w-5 text-center"></i>
+                    <span>전체 34 테마 지도</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area (9 cols) -->
+        <main class="lg:col-span-9 space-y-6">
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <!-- Top Summary Banner -->
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden bg-gradient-to-r from-blue-900/10 via-indigo-900/10 to-purple-900/10 border border-blue-200/50 dark:border-blue-900/40">
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-600 text-white">TOP 10 설정완료</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">갤럽 CliftonStrengths 34 진단 기반</span>
+                            </div>
+                            <h2 id="banner-title" class="text-2xl font-bold text-slate-900 dark:text-white">당신의 Top 10 강점 조합 분석</h2>
+                            <p id="banner-subtitle" class="text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
+                                현재 등록된 강점을 바탕으로 최적의 성과 전략과 시너지 조합을 도출합니다.
+                            </p>
+                        </div>
+                        <div class="flex gap-2">
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts & Domain Distribution Section -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Domain Chart Card -->
+                    <div class="md:col-span-5 glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-blue-500"></i> Top 10 영역별 분포
+                            </h3>
+                            <span class="text-[11px] text-slate-400">4대 Domain</span>
+                        </div>
+                        <div class="relative flex-grow min-h-[200px] flex items-center justify-center">
+                            <canvas id="domainChart" class="max-h-[220px]"></canvas>
+                        </div>
+                        <div id="domain-legend" class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+                            <!-- Dynamic Chart Legend JS -->
+                        </div>
+                    </div>
+
+                    <!-- Synergy Highlights Card -->
+                    <div class="md:col-span-7 glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-4">
+                        <h3 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> 내 강점들의 핵심 시너지 초능력
+                        </h3>
+
+                        <div id="synergy-list-container" class="space-y-3 text-xs">
+                            <!-- Dynamic Synergy Cards JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Top 10 Cards List -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-blue-600"></i> Top 10 테마 딥다이브 (클릭하여 세부 전략 확인)
+                        </h3>
+                        <span class="text-xs text-slate-400">카드를 클릭하면 상세 가이드가 열립니다</span>
+                    </div>
+
+                    <div id="top10-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- JS generated Top 10 Cards go here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: DAILY REFLECTION JOURNAL -->
+            <section id="tab-journal" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Form Side (7 cols) -->
+                    <div class="md:col-span-7 glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h2 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square text-emerald-500"></i> 오늘의 강점 발휘 일지 작성
+                            </h2>
+                            <span id="today-date-str" class="text-xs text-slate-400"></span>
+                        </div>
+
+                        <form id="journal-form" onsubmit="saveJournalEntry(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">오늘 진행한 업무 / 상황</label>
+                                <input type="text" id="journal-task" required placeholder="예: 신규 프로젝트 회의 진행, 팀원 갈등 조정, 과제 제출" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">오늘 발휘한 내 강점 테마 (복수 선택 가능)</label>
+                                <div id="journal-theme-chips" class="flex flex-wrap gap-1.5 pt-1">
+                                    <!-- JS will insert theme chips based on active Top 10 -->
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">강점이 상황에 어떻게 도움되었나요? (성과/느낀점)</label>
+                                <textarea id="journal-reflection" rows="3" required placeholder="예: 내 상위 강점을 가동해 이전 프로젝트 맥락을 짚어주고 팀원들의 의견을 조정해 좋은 타협점을 찾았음." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-slate-500">오늘의 강점 충족도:</span>
+                                    <select id="journal-satisfaction" class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-emerald-600">
+                                        <option value="5">⭐⭐⭐⭐⭐ 매우 잘 활용함</option>
+                                        <option value="4">⭐⭐⭐⭐ 만족스러움</option>
+                                        <option value="3">⭐⭐⭐ 보통</option>
+                                        <option value="2">⭐⭐ 부진했음</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs transition shadow-sm">
+                                    일지 저장하기
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right Stats Side (5 cols) -->
+                    <div class="md:col-span-5 space-y-4">
+                        <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 text-center space-y-2">
+                            <div class="w-12 h-12 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                            <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white" id="journal-streak-count">0 일 연속</h3>
+                            <p class="text-xs text-slate-500">강점 인식 성찰 일지 작성 기록</p>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3">
+                            <h4 class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
+                                <span>가장 많이 사용한 테마 Top 3</span>
+                                <i class="fa-solid fa-ranking-star text-amber-500"></i>
+                            </h4>
+                            <div id="journal-top-used" class="space-y-2 text-xs">
+                                <p class="text-slate-400 text-center py-2">일지를 기록하면 빈도 분석이 나타납니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Journal History -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-4 flex items-center justify-between">
+                        <span><i class="fa-solid fa-clock-rotate-left text-slate-500 mr-2"></i> 이전 성찰 일지 기록</span>
+                        <button onclick="clearJournalHistory()" class="text-[11px] text-rose-500 hover:underline">기록 전체 삭제</button>
+                    </h3>
+                    <div id="journal-history-list" class="space-y-3">
+                        <!-- History items generated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: BLINDSPOTS & LOWER STRENGTHS -->
+            <section id="tab-blindspots" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950 text-orange-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">맹점(Blind Spots) 및 하위 테마 보완 솔루션</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">약점을 억지로 고치려 애쓰지 마세요. 상위 강점으로 하위 테마를 우회 커버하는 지혜로운 전략입니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blind spot cards generated dynamically based on active user profile -->
+                <div id="blindspots-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Dynamic JS generated Blindspots -->
+                </div>
+            </section>
+
+            <!-- TAB 5: AI PROMPT GENERATOR -->
+            <section id="tab-prompts" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">AI 강점 성장 코치 프롬프트 생성기</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">현재 직무와 조직에서 강점을 활용해 성과와 성장을 확대하기 위한 맞춤형 코칭 프롬프트를 제공합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ai-prompts-container" class="grid grid-cols-1 gap-4">
+                    <!-- Dynamic Prompts Generated by JS -->
+                </div>
+            </section>
+
+            <!-- TAB 6: FULL 34 STRENGTHS MAP -->
+            <section id="tab-all-strengths" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-layer-group text-indigo-500"></i> 나의 전체 34개 강점 테마 서열
+                            </h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">1위부터 34위까지 전체 분포를 확인하고 검색 및 영역별 필터링을 진행해보세요.</p>
+                        </div>
+
+                        <!-- Filter controls -->
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="search-34" oninput="filter34Themes()" placeholder="테마 검색..." class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select id="filter-domain-34" onchange="filter34Themes()" class="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none">
+                                <option value="all">모든 영역</option>
+                                <option value="relationship">대인관계 구축 (파랑)</option>
+                                <option value="executing">실행력 (보라)</option>
+                                <option value="strategic">전략적 사고 (초록)</option>
+                                <option value="influencing">영향력 (주황)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 34 Grid Container -->
+                <div id="all-34-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- JS populated items -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modal Dialog 1: Profile Setup & Image OCR Modal -->
+    <div id="profile-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-3xl rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">내 갤럽 34개 강점 등록 / 변경</h3>
+                        <p class="text-xs text-slate-500">이미지 업로드(OCR) 또는 직접 입력/샘플 선택으로 내 강점을 세팅하세요.</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('profile-modal')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Tabs inside Modal -->
+            <div class="flex border-b border-slate-200 dark:border-slate-800 gap-4 text-xs font-bold">
+                <button onclick="switchProfileModalTab('ocr')" id="tab-btn-ocr" class="pb-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-image"></i> 이미지 업로드 (OCR)
+                </button>
+                <button onclick="switchProfileModalTab('manual')" id="tab-btn-manual" class="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-list-check"></i> 순위 직접 편집
+                </button>
+                <button onclick="switchProfileModalTab('preset')" id="tab-btn-preset" class="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-bookmark"></i> 샘플 프로필 선택
+                </button>
+            </div>
+
+            <!-- Modal Tab Content A: OCR Upload -->
+            <div id="modal-content-ocr" class="space-y-4">
+                <div id="drop-zone" class="border-2 border-dashed border-blue-300 dark:border-blue-700 hover:border-blue-500 rounded-2xl p-6 text-center bg-blue-50/40 dark:bg-blue-950/20 transition cursor-pointer relative" onclick="document.getElementById('ocr-file-input').click()">
+                    <input type="file" id="ocr-file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                    <div class="space-y-2">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">갤럽 34 테마 순위 리포트 이미지 업로드</h4>
+                        <p class="text-xs text-slate-500">현재 제공된 2열 양식 전용입니다. 왼쪽 1~10위, 오른쪽 11~34위를 각각 위에서 아래로 읽고, 숫자 OCR 오류가 있어도 줄의 세로 위치로 순위를 복원합니다.<br>이미지를 자르지 말고 전체 화면 그대로 업로드해주세요.</p>
+                    </div>
+                </div>
+
+                <!-- OCR Loading Overlay Indicator -->
+                <div id="ocr-loading" class="hidden p-4 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 text-center space-y-2">
+                    <div class="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-xs">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        <span id="ocr-status-text">AI 가 강점 리포트 이미지에서 34개 테마를 분석하는 중...</span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div id="ocr-progress-bar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- OCR Result Preview -->
+                <div id="ocr-result-preview" class="hidden space-y-3">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
+                        <span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> 인식된 Top 10 테마 순위:</span>
+                        <span class="text-[11px] text-slate-400 font-normal">순위가 틀린 경우 아래 '순위 직접 편집' 탭에서 수정 가능합니다.</span>
+                    </div>
+                    <div id="ocr-detected-chips" class="flex flex-wrap gap-1.5 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
+                        <!-- Chips inserted via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Tab Content B: Manual Rank Editor -->
+            <div id="modal-content-manual" class="hidden space-y-4">
+                <p class="text-xs text-slate-500">1위부터 34위까지 각 순위에 해당하는 테마를 지정하세요.</p>
+                <div id="manual-rank-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[350px] overflow-y-auto pr-2">
+                    <!-- Generated via JS -->
+                </div>
+            </div>
+
+            <!-- Modal Tab Content C: Preset Selector -->
+            <div id="modal-content-preset" class="hidden space-y-3">
+                <p class="text-xs text-slate-500">대표적인 강점 조합 샘플 프로필을 선택해 바로 테스트해보세요.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div onclick="applyPreset('relator')" class="p-4 rounded-xl border border-blue-200 dark:border-blue-800 hover:border-blue-500 bg-blue-50/50 dark:bg-blue-950/30 cursor-pointer space-y-2 text-xs transition">
+                        <span class="font-bold text-blue-700 dark:text-blue-300 block">🤝 대인관계 구축형</span>
+                        <p class="text-slate-600 dark:text-slate-300">절친, 화합, 공감, 적용, 공정성 위주의 수호자형 프로필</p>
+                    </div>
+                    <div onclick="applyPreset('executing')" class="p-4 rounded-xl border border-purple-200 dark:border-purple-800 hover:border-purple-500 bg-purple-50/50 dark:bg-purple-950/30 cursor-pointer space-y-2 text-xs transition">
+                        <span class="font-bold text-purple-700 dark:text-purple-300 block">⚡ 실행·전략가형</span>
+                        <p class="text-slate-600 dark:text-slate-300">성취, 책임, 집중, 전략, 분석 중심의 무결점 과업 완수형</p>
+                    </div>
+                    <div onclick="applyPreset('influencing')" class="p-4 rounded-xl border border-orange-200 dark:border-orange-800 hover:border-orange-500 bg-orange-50/50 dark:bg-orange-950/30 cursor-pointer space-y-2 text-xs transition">
+                        <span class="font-bold text-orange-700 dark:text-orange-300 block">🔥 영향력·리더형</span>
+                        <p class="text-slate-600 dark:text-slate-300">주도력, 행동, 커뮤니케이션, 최상화 위주의 비전 제시형</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Buttons -->
+            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+                <button onclick="closeModal('profile-modal')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-semibold">취소</button>
+                <button onclick="applyProfileChanges()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition">적용하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog 2: Summary Modal -->
+    <div id="summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-2xl rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-blue-500"></i> 현재 프로필 리포트 요약
+                </h3>
+                <button onclick="closeModal('summary-modal')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="summary-modal-content" class="text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+                <!-- Dynamic Summary Content -->
+            </div>
+            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button onclick="closeModal('summary-modal')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-semibold">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog 3: Theme Detail Modal -->
+    <div id="theme-detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-lg rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span id="modal-theme-rank" class="px-2.5 py-1 rounded-full text-xs font-bold text-white bg-blue-600">#1</span>
+                    <h3 id="modal-theme-title" class="text-base font-bold text-slate-900 dark:text-white">절친 (Relator)</h3>
+                </div>
+                <button onclick="closeModal('theme-detail-modal')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="modal-theme-body" class="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                <!-- Dynamic Modal Content -->
+            </div>
+            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button onclick="closeModal('theme-detail-modal')" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Master Gallup Theme Dictionary (34 Themes)
+        const GALLUP_DICTIONARY = [
+            { name: "절친", english: "Relator", domain: "relationship", domainName: "대인관계 구축", desc: "친밀한 사람들과 깊고 진정한 관계를 맺고, 이를 가꾸며 큰 만족감을 느낍니다.", power: "깊은 신뢰 형성을 통해 상대방의 속마음을 이끌어내고 공고한 우군을 만듭니다.", blindspot: "낯선 대규모 네트워크 모임이나 일회성 관계 형성에 스트레스를 받을 수 있습니다.", advice: "소수 핵심 인재와의 강력한 파트너십을 구축하여 대인관계의 안정감을 확보하세요." },
+            { name: "화합", english: "Harmony", domain: "relationship", domainName: "대인관계 구축", desc: "충돌과 갈등을 피하고, 서로 뜻이 맞는 합의점을 찾는 것을 중요하게 생각합니다.", power: "감정이 대립하는 상황에서도 평정심을 유지하고 평화로운 타협안을 제시합니다.", blindspot: "꼭 필요한 건강한 대립이나 직설적인 피드백을 회피하여 의사결정이 지연될 위험이 있습니다.", advice: "갈등 회피가 아닌 '더 좋은 목표를 위한 건설적 대화'로 프레임을 재정의하세요." },
+            { name: "회고", english: "Context", domain: "strategic", domainName: "전략적 사고", desc: "과거와 역사, 맥락을 이해함으로써 현재 상황을 정확하게 파악하고 미래를 준비합니다.", power: "문제가 생긴 원인과 지난 역사적 성공/실패 패턴을 분석해 근본적 해결책을 마련합니다.", blindspot: "과거에 집착하거나 선례가 없는 파격적인 변화에 신중함이 지나쳐 머뭇거릴 수 있습니다.", advice: "과거 성공 패턴을 새로운 프로젝트의 템플릿/가이드라인으로 재가공해 활용하세요." },
+            { name: "적용", english: "Adaptability", domain: "relationship", domainName: "대인관계 구축", desc: "현재 순간에 충실하며, 갑작스러운 변화나 예기치 않은 요구에도 능숙하게 대응합니다.", power: "유연성과 임기응변 능력이 뛰어낙 예측 불가능한 불확실성 속에서도 당황하지 않습니다.", blindspot: "장기적인 계획이나 명확한 로드맵 없이 즉흥적으로 일할 가능성이 있습니다.", advice: "목표의 '방향성'은 지키되, '수행 방식'에서 특유의 순발력을 마음껏 발휘하세요." },
+            { name: "공감", english: "Empathy", domain: "relationship", domainName: "대인관계 구축", desc: "타인의 감정과 기분을 마치 자신의 것처럼 감지하고 이심전심으로 느낍니다.", power: "상대방이 말하지 않는 니즈와 정서적 상태를 정확히 파악하여 세심하게 케어합니다.", blindspot: "타인의 부적정 정서나 스트레스를 그대로 흡수해 감정적 피로도가 쌓이기 쉽습니다.", advice: "상대방의 문제와 내 정서적 경계를 명확히 구분하는 감정 분리 연습이 필요합니다." },
+            { name: "공정성", english: "Consistency", domain: "executing", domainName: "실행력", desc: "모든 사람에게 동일하고 명확한 기준과 원칙을 적용하며 균등한 기회를 제공하려 합니다.", power: "규칙, 절차, 표준화 프로세스를 구축하여 예외 없는 안정적 운영을 이끕니다.", blindspot: "개인별 특수한 상황이나 예외적인 창의성을 유연하게 포용하지 못할 수 있습니다.", advice: "공정한 시스템을 만들되, 예외 상황에 대한 명확한 예외 처리 규칙을 사전 정의하세요." },
+            { name: "연결성", english: "Connectedness", domain: "relationship", domainName: "대인관계 구축", desc: "모든 사람과 사건은 우연이 아닌 커다란 맥락 속에 연결되어 있음을 믿습니다.", power: "조직 내 파편화된 요소나 갈등을 '하나의 커다란 가치' 아래 통합시키는 능력이 뛰어납니다.", blindspot: "현실적이고 구체적인 수치 문제보다 거대한 의미나 명분에 치중할 수 있습니다.", advice: "'우리가 왜 이 일을 하는가'에 대한 강력한 비전을 제시하고 공동체 의식을 고취시키세요." },
+            { name: "전략", english: "Strategic", domain: "strategic", domainName: "전략적 사고", desc: "복잡한 상황 속에서 수많은 변수를 헤치고 최선의 최적 경로를 신속하게 찾아냅니다.", power: "대안을 즉각적으로 도출하고 '만약 ~하면 어떨까?'(What if) 사고로 최적안을 선택합니다.", blindspot: "타인에게 내 생각의 과정을 충분히 설명하지 않고 결론만 제시해 당황시킬 수 있습니다.", advice: "도출한 최상의 대안 경로 뒤에 숨겨진 직관적 수순을 팀원들에게 시각화해 공유하세요." },
+            { name: "심사숙고", english: "Deliberative", domain: "executing", domainName: "실행력", desc: "의사결정을 내릴 때 리스크와 장애 요소를 신중하게 점검하며 치밀하게 준비합니다.", power: "치명적인 실수나 돌발 리스크를 사전에 예방하는 최고 수준의 품질 및 리스크 관리자입니다.", blindspot: "과도한 돌다리 두드리기 때문에 과감하고 신속한 실행의 타이밍을 놓칠 수 있습니다.", advice: "리스크 체크리스트를 정하고, 80% 안전성이 확보되면 즉시 실행하는 가이드라인을 세우세요." },
+            { name: "책임", english: "Responsibility", domain: "executing", domainName: "실행력", desc: "한번 맡은 약속이나 과업은 어떤 상황에서도 높은 윤리의식으로 완수해냅니다.", power: "높은 신뢰성을 바탕으로 조직에서 가장 믿고 맡길 수 있는 든든한 주축이 됩니다.", blindspot: "거절하지 못해 일을 오버로딩하거나, 타인의 과업까지 스스로 떠안을 수 있습니다.", advice: "나의 우선순위에 따라 '정중한 거절'을 연습하고, 권한 위임을 적극 활용하세요." },
+            { name: "개발", english: "Developer", domain: "relationship", domainName: "대인관계 구축", desc: "타인의 잠재력을 알아보고 성장을 돕는 데 보람을 느낍니다.", power: "동료들의 숨겨진 재능을 발굴하고 칭찬과 격려로 성장을 이끌어냅니다.", blindspot: "성장 가능성이 낮거나 의지가 없는 사람에게 오랫동안 과도한 에너지를 쏟을 수 있습니다.", advice: "성장 의지가 입증된 사람에게 집중 투자하세요." },
+            { name: "개별화", english: "Individualization", domain: "relationship", domainName: "대인관계 구축", desc: "각 개인이 가진 유일한 특성과 강점에 주목합니다.", power: "팀원 개개인의 스타일과 특장점에 맞춰 적재적소에 역할을 분배합니다.", blindspot: "모두에게 공평한 일관된 규칙이나 가이드라인을 세우는 데 어려움을 겪을 수 있습니다.", advice: "개별 맞춤 코칭과 조직 전체의 공통 표준 기준의 균형을 맞추세요." },
+            { name: "최상화", english: "Maximizer", domain: "influencing", domainName: "영향력", desc: "평범함보다 탁월함을 추구하며 개인과 집단의 역량을 극대화합니다.", power: "우수한 성과를 전설적인 레벨로 끌어올리는 탁월함과 품질 연마 능력이 뛰어납니다.", blindspot: "부족한 점을 보완하는 기초 작업보다 완벽함만 추구해 까다롭다는 인상을 줄 수 있습니다.", advice: "이미 완성도가 높은 80%의 과제를 200%로 끌어올리는 프로젝트에 집중하세요." },
+            { name: "긍정", english: "Positivity", domain: "relationship", domainName: "대인관계 구축", desc: "열정과 낙관주의로 주변 사람들의 사기를 북돋웁니다.", power: "침체된 침울한 분위기를 밝고 활력 넘치게 반전시키는 에너지 공급원입니다.", blindspot: "심각한 문제나 리스크 상황을 지나치게 가볍게 넘어가려 한다는 오해를 받을 수 있습니다.", advice: "낙관적인 비전과 함께 현실적 문제 직시의 모습을 보여주세요." },
+            { name: "수집", english: "Input", domain: "strategic", domainName: "전략적 사고", desc: "정보, 지식, 아이디어를 수집하고 보관하는 것을 좋아합니다.", power: "필요한 순간 아카이빙된 방대한 자료와 정보를 즉각 인용해 도웁니다.", blindspot: "정보 수집 자체에 빠져 정작 실행이나 결정 단계로 나아가지 못할 수 있습니다.", advice: "수집한 정보를 요약 필터링하여 팀원들과 주기적으로 공유하는 체계를 만드세요." },
+            { name: "신념", english: "Belief", domain: "executing", domainName: "실행력", desc: "확고한 핵심 가치를 지니고 이에 따라 행동합니다.", power: "어떠한 흔들림에도 부끄럽지 않은 강한 도덕적 나침반과 삶의 목적의식을 제공합니다.", blindspot: "자신의 가치관과 맞지 않는 변화나 의견에 완고하고 고집스럽게 보일 수 있습니다.", advice: "나의 핵심 가치와 상대방의 가치가 다를 수 있음을 인정하고 유연성을 기르세요." },
+            { name: "정리", english: "Arranger", domain: "executing", domainName: "실행력", desc: "많은 변수를 효과적으로 조직화하고 유연하게 배치합니다.", power: "복잡하게 얽힌 리소스와 인력을 가장 효율적인 구성으로 재배치합니다.", blindspot: "이미 잘 운영되고 있는 시스템을 자꾸 바꾸려 해 주변 사람들을 피곤하게 할 수 있습니다.", advice: "재배치의 이유와 이점을 팀원들에게 명확히 설명한 후 실행하세요." },
+            { name: "체계", english: "Discipline", domain: "executing", domainName: "실행력", desc: "질서, 루틴, 구조를 만들어 효율성을 극대화합니다.", power: "예측 가능하고 안정적인 일정과 표준 프로세스를 수립해 실수를 줄입니다.", blindspot: "갑작스러운 계획 변경이나 무질서한 상황에 큰 스트레스를 받을 수 있습니다.", advice: "돌발 상황에 대비한 '예비 슬롯'을 일정표에 미리 확보해 두세요." },
+            { name: "자기 확신", english: "Self-Assurance", domain: "influencing", domainName: "영향력", desc: "자신의 능력과 의사결정에 대한 깊은 신뢰를 가지고 있습니다.", power: "불확실한 위기 속에서도 나침반처럼 흔들리지 않고 팀을 리드합니다.", blindspot: "타인의 피드백이나 조언을 경시하고 독단적으로 보일 수 있습니다.", advice: "의사결정 전 주변 사람들의 의견을 먼저 경청하는 습관을 들이세요." },
+            { name: "미래지향", english: "Futuristic", domain: "strategic", domainName: "전략적 사고", desc: "미래의 비전을 그리며 타인에게 영감을 줍니다.", power: "가슴 뛰는 미래의 모습을 생생하게 묘사하여 팀원들에게 강력한 동기부여를 제공합니다.", blindspot: "현실적인 실행 제약이나 현재의 당면 과제를 소홀히 다룰 수 있습니다.", advice: "미래 비전과 함께 '오늘 당장 해야 할 1단계 실행안'을 세분화하세요." },
+            { name: "분석", english: "Analytical", domain: "strategic", domainName: "전략적 사고", desc: "원인과 결과를 규명하고 데이터와 사실을 검증합니다.", power: "감정에 휘둘리지 않고 객관적 근거와 논리로 진짜 문제의 원인을 찾아냅니다.", blindspot: "과도한 데이터 요구로 인해 의사결정이 늦어지거나 사람의 정서적 측면을 놓칠 수 있습니다.", advice: "데이터 분석 결과와 함께 인간적인 이해와 공감을 병행하세요." },
+            { name: "복구", english: "Restorative", domain: "executing", domainName: "실행력", desc: "문제의 원인을 진단하고 본래 상태로 회복시킵니다.", power: "고장 나거나 작동하지 않는 프로세스를 원상복구하고 정상화합니다.", blindspot: "정상적인 상황에서도 오직 '문제점'만 찾아내려 해 비관적으로 비쳐질 수 있습니다.", advice: "문제 해결과 더불어 잘되고 있는 성과를 축하하는 태도를 가지세요." },
+            { name: "커뮤니케이션", english: "Communication", domain: "influencing", domainName: "영향력", desc: "생각을 말과 글로 명확하고 매력적으로 표현합니다.", power: "아이디어를 생생한 스토리텔링과 비유로 전달해 사람들의 마음을 움직입니다.", blindspot: "말이 너무 많아지거나 타인의 말을 경청할 기회를 빼앗을 수 있습니다.", advice: "말하기와 경청하기의 비율을 5:5로 맞추는 연습을 하세요." },
+            { name: "집중", english: "Focus", domain: "executing", domainName: "실행력", desc: "명확한 우선순위를 설정하고 목표를 향해 매진합니다.", power: "목표에서 벗어난 불필요한 일들을 과감히 쳐내고 과업에 몰입합니다.", blindspot: "우선순위에 없는 예기치 못한 중요한 요청이나 사람을 차갑게 대할 수 있습니다.", advice: "잠시 멈추고 현 상황의 우선순위가 바뀌었는지 주기적으로 재점검하세요." },
+            { name: "포용", english: "Includer", domain: "relationship", domainName: "대인관계 구축", desc: "아무도 소외되지 않도록 집단에 사람들을 끌어들입니다.", power: "외톨이나 소외된 멤버를 감싸 안아 조직의 집단적 소속감을 강화합니다.", blindspot: "그룹의 효율성이나 자격 요건보다 모두를 다 안고 가려다 추진력이 떨어질 수 있습니다.", advice: "모두를 포함하되 각자의 역할과 책임을 명확히 구분해주세요." },
+            { name: "지적사고", english: "Intellection", domain: "strategic", domainName: "전략적 사고", desc: "지적 활동과 깊은 사색을 즐깁니다.", power: "깊이 있는 사색과 지적 통찰을 통해 복잡한 개념의 본질을 파악합니다.", blindspot: "혼자만의 생각에 너무 깊이 빠져 외부와의 소통이 단절될 수 있습니다.", advice: "사색의 결과물을 글로 정리하여 주기적으로 외부에 공유하세요." },
+            { name: "존재감", english: "Significance", domain: "influencing", domainName: "영향력", desc: "큰 영향력을 미치고 인정받고자 하는 동기가 강합니다.", power: "세상에 탁월한 흔적을 남기고자 하는 열망으로 뛰어난 성과를 냅니다.", blindspot: "타인의 인정과 칭찬에 지나치게 연연하거나 과시적으로 보일 수 있습니다.", advice: "외적 인정보다 내적 가치와 조직 전체의 공헌에 가치를 두세요." },
+            { name: "배움", english: "Learner", domain: "strategic", domainName: "전략적 사고", desc: "배우는 과정 자체에서 큰 즐거움과 열정을 느낍니다.", power: "새로운 기술, 지식, 도구를 누구보다 빠르게 흡수해 조직에 이식합니다.", blindspot: "배움의 과정에만 만족하고 배운 것을 실제 성과로 연결하지 않을 수 있습니다.", advice: "새로 배운 내용을 실무 프로젝트에 즉시 적용하는 실습 과제를 만드세요." },
+            { name: "사교성", english: "Woo", domain: "influencing", domainName: "영향력", desc: "새로운 사람을 만나고 마음을 사로잡는 것을 즐깁니다.", power: "처음 보는 사람의 경계심을 즉시 허물고 네트워크를 폭발적으로 확장합니다.", blindspot: "관계의 넓이에 집중하다 보니 깊이 있는 진정한 관계 형성이 약할 수 있습니다.", advice: "사교성으로 연 인연을 '절친' 테마나 동료들과 연결해 지속 발전시키세요." },
+            { name: "승부", english: "Competition", domain: "influencing", domainName: "영향력", desc: "다른 사람과의 비교를 통해 승리하고자 하는 의지가 강합니다.", power: "라이벌과 경쟁 구도 속에서 한계를 뛰어넘는 엄청난 성과를 끌어냅니다.", blindspot: "지면 패배감에 사로잡히거나 협력해야 할 동료조차 경쟁 상대로 볼 수 있습니다.", advice: "'과거의 나' 또는 '시장의 한계'를 최고 라이벌로 설정하세요." },
+            { name: "성취", english: "Achiever", domain: "executing", domainName: "실행력", desc: "생산성과 달성감을 느끼며 지속적으로 정진합니다.", power: "지치지 않는 강인한 스태미나로 매일 할 일을 완수하고 성과를 쌓습니다.", blindspot: "쉬지 않고 계속 일만 하려 하여 번아웃이 오거나 동료들을 재촉할 수 있습니다.", advice: "'휴식'과 '충전'도 오늘의 완수해야 할 할 일 항목에 넣어 관리하세요." },
+            { name: "발상", english: "Ideation", domain: "strategic", domainName: "전략적 사고", desc: "새롭고 파격적인 아이디어와 개념을 끊임없이 창출합니다.", power: "기존의 틀을 깨는 창의적인 아이디어로 누구도 생각지 못한 돌파구를 엽니다.", blindspot: "아이디어만 무수히 내놓고 구체적인 실행이나 마무리가 부족할 수 있습니다.", advice: "아이디어를 실현해 줄 실행력 높은 파트너와 짝을 이루세요." },
+            { name: "주도력", english: "Command", domain: "influencing", domainName: "영향력", desc: "주도권을 잡고 솔직하게 의견을 표명하며 리드합니다.", power: "위기나 혼란 상황에서 명확하게 방향을 지시하고 강한 리더십을 발휘합니다.", blindspot: "지나치게 위압적이거나 타인의 의견을 억누르는 것으로 비쳐질 수 있습니다.", advice: "솔직한 주도력과 함께 따뜻한 경청과 배려를 겸비하세요." },
+            { name: "행동", english: "Activator", domain: "influencing", domainName: "영향력", desc: "생각을 즉각적인 행동으로 옮겨 실행을 촉진시킵니다.", power: "망설이는 시간을 줄이고 즉각 시도하여 행동 중심의 역동적 스피드를 만듭니다.", blindspot: "충분한 리스크 검토 없이 일단 저질러서 실수를 유발할 수 있습니다.", advice: "'심사숙고'나 '전략' 테마를 가진 동료의 사전 브리핑을 거치고 시도하세요." }
+        ];
+
+        // Default Presets
+        const PRESETS = {
+            relator: ["절친", "화합", "회고", "적용", "공감", "공정성", "연결성", "전략", "심사숙고", "책임", "개발", "개별화", "최상화", "긍정", "수집", "신념", "정리", "체계", "자기 확신", "미래지향", "분석", "복구", "커뮤니케이션", "집중", "포용", "지적사고", "존재감", "배움", "사교성", "승부", "성취", "발상", "주도력", "행동"],
+            executing: ["성취", "책임", "집중", "전략", "분석", "심사숙고", "공정성", "체계", "복구", "배움", "회고", "정리", "수집", "신념", "최상화", "개발", "개별화", "지적사고", "미래지향", "자기 확신", "적용", "절친", "화합", "긍정", "연결성", "공감", "포용", "커뮤니케이션", "발상", "존재감", "사교성", "승부", "주도력", "행동"],
+            influencing: ["주도력", "행동", "커뮤니케이션", "최상화", "사교성", "승부", "존재감", "자기 확신", "전략", "성취", "긍정", "발상", "개별화", "개발", "적용", "절친", "수집", "미래지향", "연결성", "배움", "공감", "화합", "책임", "공정성", "정리", "체계", "분석", "지적사고", "복구", "회고", "신념", "포용", "심사숙고"]
+        };
+
+        // App Active State
+        let state = {
+            // Array of 34 theme names in user's current order
+            userOrder: JSON.parse(localStorage.getItem('gallup_user_order') || JSON.stringify(PRESETS.relator)),
+            tempManualOrder: [],
+            savedGoals: JSON.parse(localStorage.getItem('gallup_goals') || '[]'),
+            journalEntries: JSON.parse(localStorage.getItem('gallup_journal') || '[]'),
+            selectedJournalThemes: [],
+            domainChartInstance: null
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initThemeMode();
+            setupDragAndDrop();
+            refreshDashboard();
+            renderJournalHistory();
+            updateStreakCount();
+
+            const today = new Date();
+            document.getElementById('today-date-str').textContent = `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일`;
+        });
+
+        // Theme Mode Toggle Logic
+        function initThemeMode() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('color-theme', 'dark');
+                    darkIcon.classList.remove('hidden');
+                    lightIcon.classList.add('hidden');
+                } else {
+                    localStorage.setItem('color-theme', 'light');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+                btn.classList.add('text-slate-600', 'dark:text-slate-400');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-500/20');
+                activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
+            }
+        }
+
+        // Helper to get detailed object by theme name
+        function getThemeData(name) {
+            return GALLUP_DICTIONARY.find(t => t.name === name || t.english.toLowerCase() === name.toLowerCase()) || GALLUP_DICTIONARY[0];
+        }
+
+        // Get full list with user rank attached
+        function getUserStrengthsList() {
+            return state.userOrder.map((name, index) => {
+                const base = getThemeData(name);
+                return { ...base, rank: index + 1 };
+            });
+        }
+
+        // Refresh all dynamic components on dashboard
+        function refreshDashboard() {
+            const list = getUserStrengthsList();
+            const top10 = list.slice(0, 10);
+
+            // 1. Update Profile Card & Identity Summary
+            updateProfileCard(top10);
+
+            // 2. Render Top 10 Cards
+            renderTop10Cards(top10);
+
+            // 3. Render Domain Chart & Legend
+            renderDomainChart(top10);
+
+            // 4. Render Dynamic Synergies
+            renderDynamicSynergies(top10);
+
+            // 5. Render Dynamic Blindspots
+            renderDynamicBlindspots(list);
+
+            // 6. Render Dynamic AI Prompts
+            renderDynamicPrompts(list);
+
+            // 7. Render 34 Strengths Map
+            render34ThemesGrid(list);
+
+            // 8. Render Journal Chips
+            renderJournalFormChips(top10);
+
+            // 9. Update Summary Modal
+            updateSummaryModalContent(list);
+        }
+
+        function updateProfileCard(top10) {
+            // Count domains in top 10
+            const counts = { relationship: 0, executing: 0, strategic: 0, influencing: 0 };
+            top10.forEach(t => counts[t.domain]++);
+
+            // Determine dominant domain
+            const sortedDomains = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+            const topDomainKey = sortedDomains[0][0];
+
+            let typeName = "대인관계 구축형 리더";
+            if (topDomainKey === 'executing') typeName = "실행력 집중 완수형";
+            if (topDomainKey === 'strategic') typeName = "전략적 사고 기획가";
+            if (topDomainKey === 'influencing') typeName = "영향력 주도 리더";
+
+            document.getElementById('profile-type-tag').textContent = typeName;
+
+            const domainContainer = document.getElementById('profile-domain-counts');
+            domainContainer.innerHTML = `
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 dark:text-slate-400">대인관계 구축</span>
+                    <span class="font-semibold text-blue-600 dark:text-blue-400">${counts.relationship}/10</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 dark:text-slate-400">실행력</span>
+                    <span class="font-semibold text-purple-600 dark:text-purple-400">${counts.executing}/10</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 dark:text-slate-400">전략적 사고</span>
+                    <span class="font-semibold text-emerald-600 dark:text-emerald-400">${counts.strategic}/10</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 dark:text-slate-400">영향력</span>
+                    <span class="font-semibold text-orange-500">${counts.influencing}/10</span>
+                </div>
+            `;
+
+            document.getElementById('profile-identity-summary').innerHTML = `
+                "<strong>${top10[0].name}</strong>(#1), <strong>${top10[1].name}</strong>(#2), <strong>${top10[2].name}</strong>(#3) 테마가 주도하며, ${typeName}로서 팀과 과제에 강력한 차별성을 제공합니다."
+            `;
+        }
+
+        function renderTop10Cards(top10) {
+            const container = document.getElementById('top10-cards-container');
+            container.innerHTML = top10.map(item => {
+                const badge = getDomainBadge(item.domain);
+                return `
+                    <div onclick="openThemeDetail(${item.rank})" class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-md transition cursor-pointer flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-sm">
+                                    #${item.rank}
+                                </span>
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">${item.name} <span class="text-xs font-normal text-slate-400">(${item.english})</span></h4>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-semibold rounded-full border ${badge.bg}">
+                                <i class="fa-solid ${badge.icon} mr-1"></i>${badge.name}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
+                            ${item.desc}
+                        </p>
+                        <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-blue-600 dark:text-blue-400 font-semibold">
+                            <span>핵심 파워 & 맹점 보기</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDomainChart(top10) {
+            const counts = { relationship: 0, executing: 0, strategic: 0, influencing: 0 };
+            top10.forEach(t => counts[t.domain]++);
+
+            const ctx = document.getElementById('domainChart').getContext('2d');
+            if (state.domainChartInstance) {
+                state.domainChartInstance.destroy();
+            }
+
+            state.domainChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['대인관계 구축', '실행력', '전략적 사고', '영향력'],
+                    datasets: [{
+                        data: [counts.relationship, counts.executing, counts.strategic, counts.influencing],
+                        backgroundColor: ['#2563eb', '#9333ea', '#16a34a', '#ea580c'],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    cutout: '70%'
+                }
+            });
+
+            document.getElementById('domain-legend').innerHTML = `
+                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span><span class="text-slate-600 dark:text-slate-300">대인관계 (${counts.relationship}개)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span><span class="text-slate-600 dark:text-slate-300">실행력 (${counts.executing}개)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span><span class="text-slate-600 dark:text-slate-300">전략적사고 (${counts.strategic}개)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span><span class="text-slate-600 dark:text-slate-300">영향력 (${counts.influencing}개)</span></div>
+            `;
+        }
+
+        function renderDynamicSynergies(top10) {
+            const container = document.getElementById('synergy-list-container');
+            const t1 = top10[0], t2 = top10[1], t3 = top10[2], t4 = top10[3], t5 = top10[4];
+
+            container.innerHTML = `
+                <div class="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/50">
+                    <div class="font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5 mb-1">
+                        <span class="px-1.5 py-0.5 rounded bg-blue-600 text-white text-[10px]">시너지 1</span>
+                        ${t1.name}(1위) + ${t2.name}(2위) = 주도적 핵심 엔진
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        ${t1.power} 여기에 ${t2.name} 테마가 뒷받침되어 남들과 차별화된 독창적인 추진력을 제공합니다.
+                    </p>
+                </div>
+
+                <div class="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50">
+                    <div class="font-bold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5 mb-1">
+                        <span class="px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px]">시너지 2</span>
+                        ${t3.name}(3위) + ${t4.name}(4위) = 유연한 문제 해결 스킬
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        ${t3.desc} ${t4.name} 역량이 함께 작동하여 문제 발생 시 최선의 대안으로 완벽하게 전환합니다.
+                    </p>
+                </div>
+
+                <div class="p-3 rounded-xl bg-purple-50/60 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/50">
+                    <div class="font-bold text-purple-900 dark:text-purple-300 flex items-center gap-1.5 mb-1">
+                        <span class="px-1.5 py-0.5 rounded bg-purple-600 text-white text-[10px]">시너지 3</span>
+                        ${t5.name}(5위) + Top 10 후반 테마 = 안전한 품질 & 신뢰 완성
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        ${t5.power} 조직 내에서 탁월한 결과를 일관되게 만들어내는 단단한 기반이 됩니다.
+                    </p>
+                </div>
+            `;
+        }
+
+        function renderDynamicBlindspots(fullList) {
+            const container = document.getElementById('blindspots-cards-container');
+            const top10 = fullList.slice(0, 10);
+            const bottom3 = fullList.slice(31);
+
+            container.innerHTML = `
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-sm">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 주의 1: 상위 테마(${top10[0].name}, ${top10[1].name})의 과유불급 위험
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        <strong>${top10[0].name}(1위)</strong>와 <strong>${top10[1].name}(2위)</strong>가 지나치게 강해지면: ${top10[0].blindspot}
+                    </p>
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+                        <div class="font-bold text-blue-600 dark:text-blue-400"><i class="fa-solid fa-key mr-1"></i> 해결 프레임:</div>
+                        <p>"${top10[0].advice}"</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-orange-600 dark:text-orange-400 font-bold text-sm">
+                        <i class="fa-solid fa-battery-quarter"></i> 주의 2: 하위 테마(${bottom3[2].name} #${bottom3[2].rank}, ${bottom3[1].name} #${bottom3[1].rank}) 보완
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        ${bottom3[2].name} 및 ${bottom3[1].name} 테마가 하위권에 있어 이 방식의 직진 스타일은 스트레스를 유발할 수 있습니다.
+                    </p>
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+                        <div class="font-bold text-blue-600 dark:text-blue-400"><i class="fa-solid fa-key mr-1"></i> 우회 전략:</div>
+                        <p>"하위 테마를 억지로 올리려 하지 말고, 상위 강점인 <strong>${top10[0].name}</strong>와 <strong>${top10[2].name}</strong>를 활용해 동일한 결과를 만들어내세요."</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDynamicPrompts(fullList) {
+            const container = document.getElementById('ai-prompts-container');
+            const top10Names = fullList.slice(0, 10).map(t => `${t.rank}.${t.name}`).join(' ');
+            const bottomNames = fullList.slice(31).map(t => `${t.rank}.${t.name}`).join(' ');
+
+            container.innerHTML = `
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-comments text-blue-500"></i> 프롬프트 1: 조직 내 강점 성장 전략
+                        </h3>
+                        <button onclick="copyPrompt('prompt-1')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-copy"></i> 복사하기
+                        </button>
+                    </div>
+                    <pre id="prompt-1" class="p-3 rounded-xl bg-slate-900 text-slate-200 text-xs overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">나는 갤럽 강점 진단(CliftonStrengths 34)에서 다음과 같은 결과를 받았습니다:
+Top 10: ${top10Names} (하위 테마: ${bottomNames})
+
+위 강점 조합을 기반으로 현재 직무 성과 향상, 협업 영향력 확대, 조직 신뢰 구축, 리더십 강화, 향후 1년 성장전략을 제안해줘.</pre>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-handshake text-emerald-500"></i> 프롬프트 2: 조직 내 커뮤니케이션 & 갈등 관리
+                        </h3>
+                        <button onclick="copyPrompt('prompt-2')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-copy"></i> 복사하기
+                        </button>
+                    </div>
+                    <pre id="prompt-2" class="p-3 rounded-xl bg-slate-900 text-slate-200 text-xs overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">내 갤럽 Top 10 테마는 [${top10Names}] 이며, 하위 테마는 [${bottomNames}] 입니다.
+
+내 강점을 활용해 협업 영향력 확대, 조직 내 네트워크 강화, 전문성 성장, 후배 육성, 조직 기여 확대 실행전략을 제안해줘.</pre>
+                </div>
+            `;
+        }
+
+        function render34ThemesGrid(list) {
+            const container = document.getElementById('all-34-grid');
+            container.innerHTML = list.map(t => {
+                const badge = getDomainBadge(t.domain);
+                const isTop10 = t.rank <= 10;
+                return `
+                    <div class="theme-34-card glass-card rounded-xl p-3 border ${isTop10 ? 'border-blue-500/40 bg-blue-50/20 dark:bg-blue-950/20' : 'border-slate-200 dark:border-slate-800'} space-y-2" data-domain="${t.domain}" data-name="${t.name}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-md ${isTop10 ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'} font-bold text-xs flex items-center justify-center">
+                                    ${t.rank}
+                                </span>
+                                <span class="font-bold text-xs text-slate-900 dark:text-white">${t.name}</span>
+                            </div>
+                            <span class="px-2 py-0.5 text-[9px] font-semibold rounded-full border ${badge.bg}">
+                                ${badge.name}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">
+                            ${t.desc}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateSummaryModalContent(list) {
+            const container = document.getElementById('summary-modal-content');
+            const top5 = list.slice(0, 5).map(t => `${t.rank}.${t.name}(${t.english})`).join(' | ');
+            const top10 = list.slice(5, 10).map(t => `${t.rank}.${t.name}(${t.english})`).join(' | ');
+            const bottom = list.slice(29).map(t => `${t.rank}.${t.name}(${t.english})`).join(' | ');
+
+            container.innerHTML = `
+                <p><strong>진단 리포트 요약:</strong> Gallup CliftonStrengths 34</p>
+                <div class="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl space-y-1">
+                    <p class="font-bold text-blue-800 dark:text-blue-300">Top 1~5 (핵심 엔진):</p>
+                    <p>${top5}</p>
+                </div>
+                <div class="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl space-y-1">
+                    <p class="font-bold text-purple-800 dark:text-purple-300">Top 6~10 (보조 서포터):</p>
+                    <p>${top10}</p>
+                </div>
+                <div class="p-3 bg-orange-50 dark:bg-orange-950/40 rounded-xl space-y-1">
+                    <p class="font-bold text-orange-800 dark:text-orange-300">하위 테마 (우회 관리 필요):</p>
+                    <p>${bottom}</p>
+                </div>
+            `;
+        }
+
+        function getDomainBadge(domain) {
+            switch(domain) {
+                case 'relationship': return { bg: 'bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800', name: '대인관계 구축', icon: 'fa-heart' };
+                case 'executing': return { bg: 'bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800', name: '실행력', icon: 'fa-gears' };
+                case 'strategic': return { bg: 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800', name: '전략적 사고', icon: 'fa-brain' };
+                case 'influencing': return { bg: 'bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800', name: '영향력', icon: 'fa-bullhorn' };
+                default: return { bg: 'bg-slate-100 text-slate-700', name: '기타', icon: 'fa-star' };
+            }
+        }
+
+        function openThemeDetail(rank) {
+            const list = getUserStrengthsList();
+            const item = list.find(t => t.rank === rank);
+            if (!item) return;
+
+            document.getElementById('modal-theme-rank').textContent = `#${item.rank}`;
+            document.getElementById('modal-theme-title').textContent = `${item.name} (${item.english})`;
+
+            const badge = getDomainBadge(item.domain);
+            document.getElementById('modal-theme-body').innerHTML = `
+                <div class="inline-block px-2.5 py-0.5 text-[11px] font-semibold rounded-full border ${badge.bg} mb-2">
+                    <i class="fa-solid ${badge.icon} mr-1"></i>${badge.name}
+                </div>
+                <p class="text-slate-700 dark:text-slate-200 text-xs font-medium leading-relaxed bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3">
+                    ${item.desc}
+                </p>
+
+                <div class="space-y-2">
+                    <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/50">
+                        <span class="font-bold text-blue-900 dark:text-blue-300 block mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> 나만의 필살기 (Superpower):</span>
+                        <p class="text-slate-600 dark:text-slate-300">${item.power}</p>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/50">
+                        <span class="font-bold text-rose-900 dark:text-rose-300 block mb-1"><i class="fa-solid fa-circle-exclamation mr-1"></i> 주의할 맹점 (Blindspot):</span>
+                        <p class="text-slate-600 dark:text-slate-300">${item.blindspot}</p>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50">
+                        <span class="font-bold text-emerald-900 dark:text-emerald-300 block mb-1"><i class="fa-solid fa-lightbulb mr-1"></i> 성장을 위한 실행 팁:</span>
+                        <p class="text-slate-600 dark:text-slate-300">${item.advice}</p>
+                    </div>
+                </div>
+            `;
+
+            openModal('theme-detail-modal');
+        }
+
+        // Image Drag & Drop & OCR Handling
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            if (!dropZone) return;
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('border-blue-500', 'bg-blue-100/50');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-blue-500', 'bg-blue-100/50');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files && files.length > 0) {
+                    processImageFile(files[0]);
+                }
+            });
+        }
+
+        function handleImageUpload(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                processImageFile(files[0]);
+            }
+        }
+
+        async function processImageFile(file) {
+            const loading = document.getElementById('ocr-loading');
+            const statusText = document.getElementById('ocr-status-text');
+            const progressBar = document.getElementById('ocr-progress-bar');
+            const resultPreview = document.getElementById('ocr-result-preview');
+            loading.classList.remove('hidden');
+            resultPreview.classList.add('hidden');
+            progressBar.style.width = '3%';
+
+            let worker = null;
+            try {
+                statusText.textContent = '이미지를 34개의 순위 줄로 나눠 하나씩 확인하는 중...';
+                const regions = await createOCRRegions(file);
+                const allRanks = {};
+
+                // 한 번만 OCR Worker를 만들어 34개 줄을 순서대로 검사합니다.
+                // 줄마다 독립적으로 인식하므로 #2가 실패해도 #3이 #2로 당겨지지 않습니다.
+                worker = await Tesseract.createWorker('eng', 1, {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            const progress = Math.max(0, Math.min(1, Number(m.progress) || 0));
+                            progressBar.style.width = `${Math.round(5 + progress * 10)}%`;
+                        }
+                    }
+                });
+                await worker.setParameters({
+                    tessedit_pageseg_mode: '7',
+                    preserve_interword_spaces: '1'
+                });
+
+                let completed = 0;
+                const total = regions.reduce((sum, r) => sum + r.rows.length, 0);
+
+                for (const region of regions) {
+                    for (const row of region.rows) {
+                        const rank = row.rank;
+                        statusText.textContent = `#${rank} ${region.label} 줄을 정확하게 읽는 중...`;
+                        const result = await worker.recognize(row.canvas);
+                        const theme = identifyThemeFromSingleRow(result?.data?.text || '');
+                        if (theme) allRanks[rank] = theme;
+
+                        completed++;
+                        progressBar.style.width = `${Math.round(5 + (completed / total) * 90)}%`;
+                    }
+                }
+
+                const order = Array.from({ length: 34 }, (_, i) => allRanks[i + 1] || null);
+                const validCount = order.filter(Boolean).length;
+                const uniqueCount = new Set(order.filter(Boolean)).size;
+
+                state.tempManualOrder = order;
+                renderDetectedChips(order);
+                resultPreview.classList.remove('hidden');
+                progressBar.style.width = '100%';
+
+                if (validCount === 34 && uniqueCount === 34) {
+                    showToast('1~34위를 모두 인식했습니다. 원본과 대조 후 적용해주세요.');
+                } else {
+                    showToast(`자동 인식 ${validCount}/34개. 누락된 순위는 앞으로 당기지 않고 해당 순위에 그대로 표시했습니다.`, 'info');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('이미지 인식에 실패했습니다. 순위 직접 편집을 이용해주세요.', 'info');
+            } finally {
+                if (worker) {
+                    try { await worker.terminate(); } catch (_) {}
+                }
+                loading.classList.add('hidden');
+            }
+        }
+
+        function createOCRRegions(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    try {
+                        const w = img.naturalWidth;
+                        const h = img.naturalHeight;
+                        const splitX = Math.round(w * 0.495);
+                        const firstCenter = h * (43 / 535);
+                        const rowStep = h * (20 / 535);
+                        const rowHeight = Math.max(14, Math.round(h * (18 / 535)));
+
+                        const buildRows = (x0, x1, startRank, count, label) => {
+                            const rows = [];
+                            for (let i = 0; i < count; i++) {
+                                const centerY = firstCenter + rowStep * i;
+                                const y0 = Math.max(0, Math.round(centerY - rowHeight / 2));
+                                const y1 = Math.min(h, Math.round(centerY + rowHeight / 2));
+                                rows.push({
+                                    rank: startRank + i,
+                                    canvas: makeRowCanvas(img, x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0))
+                                });
+                            }
+                            return { label, rows };
+                        };
+
+                        URL.revokeObjectURL(url);
+                        resolve([
+                            // 숫자/색 막대보다 텍스트가 중요하므로 양쪽 끝을 살짝 잘라 OCR 안정성을 높입니다.
+                            buildRows(10, splitX - 2, 1, 10, '왼쪽'),
+                            buildRows(splitX + 8, w - 2, 11, 24, '오른쪽')
+                        ]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        function makeRowCanvas(img, sx, sy, sw, sh) {
+            const scale = 4;
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(sw * scale);
+            canvas.height = Math.round(sh * scale);
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            ctx.imageSmoothingEnabled = true;
+            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+            const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const d = image.data;
+            for (let i = 0; i < d.length; i += 4) {
+                const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                const v = gray < 210 ? Math.max(0, (gray - 125) * 1.8 + 125) : 255;
+                d[i] = d[i + 1] = d[i + 2] = v;
+            }
+            ctx.putImageData(image, 0, 0);
+            return canvas;
+        }
+
+        function normalizeOCRKey(value) {
+            return String(value || '')
+                .normalize('NFKC')
+                .toLowerCase()
+                .replace(/[^a-z0-9가-힣]/g, '');
+        }
+
+        function levenshtein(a, b) {
+            const m = a.length;
+            const n = b.length;
+            const prev = new Array(n + 1);
+            const curr = new Array(n + 1);
+            for (let j = 0; j <= n; j++) prev[j] = j;
+            for (let i = 1; i <= m; i++) {
+                curr[0] = i;
+                for (let j = 1; j <= n; j++) {
+                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                    curr[j] = Math.min(curr[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+                }
+                for (let j = 0; j <= n; j++) prev[j] = curr[j];
+            }
+            return prev[n];
+        }
+
+        function themeSimilarity(a, b) {
+            const x = normalizeOCRKey(a);
+            const y = normalizeOCRKey(b);
+            if (!x || !y) return 0;
+            if (x.includes(y) || y.includes(x)) return 1;
+            return 1 - levenshtein(x, y) / Math.max(x.length, y.length);
+        }
+
+        function identifyThemeFromSingleRow(text) {
+            const normalized = String(text || '').normalize('NFKC').trim();
+            const key = normalizeOCRKey(normalized);
+            if (!key) return null;
+
+            // 가장 먼저 영문 테마명이 정확히/부분적으로 들어있는 경우를 잡습니다.
+            for (const theme of GALLUP_DICTIONARY) {
+                const en = normalizeOCRKey(theme.english);
+                const ko = normalizeOCRKey(theme.name);
+                if (key.includes(en) || key.includes(ko)) return theme.name;
+            }
+
+            // OCR 오인식까지 감안해 '이 한 줄에서 가장 가까운 테마'를 선택합니다.
+            // 한 줄 자체가 한 순위를 뜻하므로, 낮은 임계값에서도 다음/이전 순위로 밀리지 않습니다.
+            let best = null;
+            const candidates = [];
+            const tokens = normalized.split(/\s+/).filter(Boolean);
+            candidates.push(normalized, ...tokens);
+            for (let i = 0; i < tokens.length - 1; i++) {
+                candidates.push(tokens[i] + tokens[i + 1]);
+            }
+
+            for (const theme of GALLUP_DICTIONARY) {
+                let score = 0;
+                for (const candidate of candidates) {
+                    score = Math.max(score, themeSimilarity(candidate, theme.english));
+                }
+                if (!best || score > best.score) best = { theme: theme.name, score };
+            }
+
+            return best && best.score >= 0.52 ? best.theme : null;
+        }
+
+        function renderDetectedChips(themeNames) {
+            const container = document.getElementById('ocr-detected-chips');
+            container.innerHTML = themeNames.map((name, idx) => {
+                const rank = idx + 1;
+                if (!name) {
+                    return `<span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 border border-rose-200 font-semibold">#${rank} 인식 실패</span>`;
+                }
+                return `<span class="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-semibold">#${rank} ${name}</span>`;
+            }).join('');
+        }
+
+        // Profile Modal Tab Switcher
+        function switchProfileModalTab(tab) {
+            ['ocr', 'manual', 'preset'].forEach(t => {
+                document.getElementById(`modal-content-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                btn.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById(`modal-content-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tab}`);
+            activeBtn.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+
+            if (tab === 'manual') {
+                renderManualRankList();
+            }
+        }
+
+        function renderManualRankList() {
+            const container = document.getElementById('manual-rank-list');
+            const currentList = state.tempManualOrder.length === 34 ? state.tempManualOrder : state.userOrder;
+
+            container.innerHTML = currentList.map((selectedName, rankIdx) => `
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                    <span class="w-6 text-center font-bold text-xs text-blue-600">#${rankIdx + 1}</span>
+                    <select onchange="updateManualRank(${rankIdx}, this.value)" class="w-full text-xs bg-white dark:bg-slate-900 px-2 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none">
+                        ${GALLUP_DICTIONARY.map(t => `<option value="${t.name}" ${t.name === selectedName ? 'selected' : ''}>${t.name} (${t.english})</option>`).join('')}
+                    </select>
+                </div>
+            `).join('');
+        }
+
+        function updateManualRank(rankIdx, newName) {
+            let list = state.tempManualOrder.length === 34 ? [...state.tempManualOrder] : [...state.userOrder];
+            const oldIndex = list.indexOf(newName);
+
+            if (oldIndex !== -1 && oldIndex !== rankIdx) {
+                // Swap
+                const temp = list[rankIdx];
+                list[rankIdx] = newName;
+                list[oldIndex] = temp;
+            } else {
+                list[rankIdx] = newName;
+            }
+
+            state.tempManualOrder = list;
+            renderManualRankList();
+        }
+
+        function applyPreset(type) {
+            if (PRESETS[type]) {
+                state.tempManualOrder = [...PRESETS[type]];
+                applyProfileChanges();
+                showToast("샘플 프로필이 적용되었습니다.");
+            }
+        }
+
+        function applyProfileChanges() {
+            const isCompleteOrder = state.tempManualOrder.length === 34
+                && state.tempManualOrder.every(Boolean)
+                && new Set(state.tempManualOrder).size === 34;
+
+            if (state.tempManualOrder.length === 34 && isCompleteOrder) {
+                state.userOrder = [...state.tempManualOrder];
+            } else if (state.tempManualOrder.length === 34) {
+                showToast('34개 순위가 모두 채워진 뒤 적용해주세요. 누락된 순위는 직접 편집에서 수정할 수 있습니다.', 'info');
+                return;
+            }
+            localStorage.setItem('gallup_user_order', JSON.stringify(state.userOrder));
+            refreshDashboard();
+            closeModal('profile-modal');
+            showToast("강점 프로필이 성공적으로 변경되었습니다!");
+        }
+
+        function openModal(id) {
+            if (id === 'profile-modal') {
+                state.tempManualOrder = [...state.userOrder];
+            }
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function generateGoalStrategy(e) {
+            e.preventDefault();
+            const input = document.getElementById('goal-input').value.trim();
+            const timeframe = document.getElementById('goal-timeframe').value;
+
+            if (!input) return;
+
+            const container = document.getElementById('goal-result-container');
+            container.classList.remove('hidden');
+
+            const list = getUserStrengthsList();
+            const top1 = list[0], top2 = list[1], top3 = list[2], top4 = list[3], top5 = list[4];
+
+            let timeText = timeframe === '1month' ? '단기(1달 이내)' : timeframe === 'quarter' ? '분기(3개월)' : '중장기';
+
+            container.innerHTML = `
+                <div class="flex items-center justify-between border-b border-blue-200/60 dark:border-blue-900/60 pb-3">
+                    <div>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white">${timeText}</span>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base mt-1">🎯 "${input}"</h3>
+                    </div>
+                    <button onclick="saveCurrentGoalStrategy('${encodeURIComponent(input)}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-bookmark"></i> 이 가이드 저장
+                    </button>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-gears text-blue-500"></i> 가동해야 할 Top 강점 테마 & 실행 로드맵
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                            <span class="font-bold text-blue-600 dark:text-blue-400">1단계: 착수 & 프레임 설계</span>
+                            <div class="text-[11px] text-slate-500">가동 강점: <span class="font-semibold text-slate-800 dark:text-slate-200">${top1.name}(#1), ${top2.name}(#2)</span></div>
+                            <p class="text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                                ${top1.power} 이를 바탕으로 목표의 초기 실행 구상을 신속하게 정립하세요.
+                            </p>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                            <span class="font-bold text-purple-600 dark:text-purple-400">2단계: 협력 & 관계 조율</span>
+                            <div class="text-[11px] text-slate-500">가동 강점: <span class="font-semibold text-slate-800 dark:text-slate-200">${top3.name}(#3), ${top4.name}(#4)</span></div>
+                            <p class="text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                                ${top3.desc} 관련 이해관계자들과 미팅을 가지고 우군을 확보합니다.
+                            </p>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">3단계: 마감 & 디테일 완수</span>
+                            <div class="text-[11px] text-slate-500">가동 강점: <span class="font-semibold text-slate-800 dark:text-slate-200">${top5.name}(#5)</span></div>
+                            <p class="text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                                ${top5.power} 목표 마감 시점까지 오점을 방지하고 성공적으로 프로젝트를 제출하세요.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveCurrentGoalStrategy(encodedGoal) {
+            const goalName = decodeURIComponent(encodedGoal);
+            if (state.savedGoals.some(g => g.title === goalName)) {
+                showToast("이미 저장된 목표입니다.", "info");
+                return;
+            }
+
+            state.savedGoals.push({
+                id: Date.now(),
+                title: goalName,
+                date: new Date().toLocaleDateString('ko-KR')
+            });
+
+            localStorage.setItem('gallup_goals', JSON.stringify(state.savedGoals));
+            renderSavedGoals();
+            showToast("목표 전략 카드가 저장되었습니다.");
+        }
+
+        function renderSavedGoals() {
+            const listContainer = document.getElementById('saved-goals-list');
+            const countLabel = document.getElementById('saved-goals-count');
+
+            countLabel.textContent = `${state.savedGoals.length}개 저장됨`;
+
+            if (state.savedGoals.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">저장된 목표가 없습니다.</p>`;
+                return;
+            }
+
+            listContainer.innerHTML = state.savedGoals.map(g => `
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                    <div>
+                        <span class="font-bold text-slate-900 dark:text-white block">${g.title}</span>
+                        <span class="text-[10px] text-slate-400">저장일: ${g.date}</span>
+                    </div>
+                    <button onclick="deleteGoal(${g.id})" class="text-slate-400 hover:text-rose-500 text-xs p-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function deleteGoal(id) {
+            state.savedGoals = state.savedGoals.filter(g => g.id !== id);
+            localStorage.setItem('gallup_goals', JSON.stringify(state.savedGoals));
+            renderSavedGoals();
+            showToast("목표가 삭제되었습니다.");
+        }
+
+        function renderJournalFormChips(top10) {
+            const container = document.getElementById('journal-theme-chips');
+            container.innerHTML = top10.map(t => `
+                <button type="button" onclick="toggleJournalTheme('${t.name}', this)" class="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[11px] font-medium text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition">
+                    #${t.rank} ${t.name}
+                </button>
+            `).join('');
+        }
+
+        function toggleJournalTheme(name, btn) {
+            if (state.selectedJournalThemes.includes(name)) {
+                state.selectedJournalThemes = state.selectedJournalThemes.filter(n => n !== name);
+                btn.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
+            } else {
+                state.selectedJournalThemes.push(name);
+                btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+            }
+        }
+
+        function saveJournalEntry(e) {
+            e.preventDefault();
+            const task = document.getElementById('journal-task').value.trim();
+            const reflection = document.getElementById('journal-reflection').value.trim();
+            const satisfaction = document.getElementById('journal-satisfaction').value;
+
+            if (!task || !reflection) return;
+
+            const entry = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('ko-KR'),
+                task,
+                themes: [...state.selectedJournalThemes],
+                reflection,
+                satisfaction
+            };
+
+            state.journalEntries.unshift(entry);
+            localStorage.setItem('gallup_journal', JSON.stringify(state.journalEntries));
+
+            document.getElementById('journal-form').reset();
+            state.selectedJournalThemes = [];
+            renderJournalFormChips(getUserStrengthsList().slice(0, 10));
+
+            renderJournalHistory();
+            updateStreakCount();
+            showToast("오늘의 강점 성찰 일지가 저장되었습니다.");
+        }
+
+        function renderJournalHistory() {
+            const container = document.getElementById('journal-history-list');
+
+            if (state.journalEntries.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">기록된 성찰 일지가 없습니다. 첫 번째 기록을 남겨보세요!</p>`;
+                return;
+            }
+
+            container.innerHTML = state.journalEntries.map(e => `
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 space-y-2 text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-900 dark:text-white">${e.task}</span>
+                        <span class="text-[10px] text-slate-400">${e.date}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        ${e.themes.map(t => `<span class="px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] font-semibold">${t}</span>`).join('')}
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">${e.reflection}</p>
+                </div>
+            `).join('');
+
+            renderTopUsedThemes();
+        }
+
+        function renderTopUsedThemes() {
+            const container = document.getElementById('journal-top-used');
+            const counts = {};
+
+            state.journalEntries.forEach(e => {
+                e.themes.forEach(t => {
+                    counts[t] = (counts[t] || 0) + 1;
+                });
+            });
+
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 3);
+
+            if (sorted.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-center py-2">기록이 쌓이면 통계가 나타납니다.</p>`;
+                return;
+            }
+
+            container.innerHTML = sorted.map(([name, count], idx) => `
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-100 dark:bg-slate-800">
+                    <span class="font-semibold text-slate-800 dark:text-slate-200">${idx+1}. ${name}</span>
+                    <span class="font-bold text-emerald-600">${count}회 발휘</span>
+                </div>
+            `).join('');
+        }
+
+        function updateStreakCount() {
+            const countLabel = document.getElementById('journal-streak-count');
+            countLabel.textContent = `${state.journalEntries.length}개 작성됨`;
+        }
+
+        function clearJournalHistory() {
+            if (state.journalEntries.length === 0) return;
+            state.journalEntries = [];
+            localStorage.removeItem('gallup_journal');
+            renderJournalHistory();
+            updateStreakCount();
+            showToast("모든 일지 기록이 삭제되었습니다.", "info");
+        }
+
+        function filter34Themes() {
+            const query = document.getElementById('search-34').value.toLowerCase();
+            const domain = document.getElementById('filter-domain-34').value;
+
+            document.querySelectorAll('.theme-34-card').forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const cardDomain = card.dataset.domain;
+
+                const matchQuery = name.includes(query);
+                const matchDomain = domain === 'all' || cardDomain === domain;
+
+                if (matchQuery && matchDomain) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function copyPrompt(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("프롬프트가 클립보드에 복사되었습니다!");
+            }).catch(() => {
+                showToast("복사 실패. 직접 선택하여 복사해주세요.", "info");
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-600' : 'bg-blue-600';
+            toast.className = `${bgClass} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 transform transition duration-300 translate-y-5 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-5', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
