@@ -475,7 +475,7 @@
             <!-- Modal Footer Buttons -->
             <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
                 <button onclick="closeModal('profile-modal')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-semibold">취소</button>
-                <button onclick="applyProfileChanges()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition">적용하기</button>
+                <button type="button" id="apply-profile-btn" onclick="applyProfileChanges(event)" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition">적용하기</button>
             </div>
         </div>
     </div>
@@ -1293,21 +1293,63 @@ Top 10: ${top10Names} (하위 테마: ${bottomNames})
             }
         }
 
-        function applyProfileChanges() {
-            const isCompleteOrder = state.tempManualOrder.length === 34
-                && state.tempManualOrder.every(Boolean)
-                && new Set(state.tempManualOrder).size === 34;
-
-            if (state.tempManualOrder.length === 34 && isCompleteOrder) {
-                state.userOrder = [...state.tempManualOrder];
-            } else if (state.tempManualOrder.length === 34) {
-                showToast('34개 순위가 모두 채워진 뒤 적용해주세요. 누락된 순위는 직접 편집에서 수정할 수 있습니다.', 'info');
-                return;
+        function applyProfileChanges(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
             }
-            localStorage.setItem('gallup_user_order', JSON.stringify(state.userOrder));
-            refreshDashboard();
-            closeModal('profile-modal');
-            showToast("강점 프로필이 성공적으로 변경되었습니다!");
+
+            const order = Array.isArray(state.tempManualOrder) ? [...state.tempManualOrder] : [];
+            const isCompleteOrder = order.length === 34
+                && order.every(v => typeof v === 'string' && v.trim())
+                && new Set(order).size === 34;
+
+            if (!isCompleteOrder) {
+                showToast('1~34위가 모두 인식되어야 적용할 수 있습니다. 빨간색 순위가 있다면 직접 편집에서 확인해주세요.', 'info');
+                return false;
+            }
+
+            const btn = document.getElementById('apply-profile-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '적용 중...';
+            }
+
+            try {
+                // 1) 상태를 먼저 갱신
+                state.userOrder = order.slice(0, 34);
+
+                // 2) 영구 저장 + 백업 키 저장
+                const encoded = JSON.stringify(state.userOrder);
+                localStorage.setItem('gallup_user_order', encoded);
+                localStorage.setItem('gallup_user_order_v2', encoded);
+
+                // 저장 직후 실제로 다시 읽을 수 있는지 확인
+                const saved = JSON.parse(localStorage.getItem('gallup_user_order') || 'null');
+                if (!Array.isArray(saved) || saved.length !== 34 || new Set(saved).size !== 34) {
+                    throw new Error('localStorage 저장 검증 실패');
+                }
+
+                closeModal('profile-modal');
+                refreshDashboard();
+                showToast('강점 프로필이 적용되었습니다. 페이지를 새로고침합니다.');
+
+                // GitHub Pages 캐시와 관계없이 같은 페이지를 다시 로드
+                setTimeout(() => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('profileReload', Date.now().toString());
+                    window.location.replace(url.toString());
+                }, 300);
+                return true;
+            } catch (err) {
+                console.error('프로필 적용 오류:', err);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '적용하기';
+                }
+                showToast('프로필 저장에 실패했습니다. 브라우저 저장소를 사용할 수 있는지 확인해주세요.', 'info');
+                return false;
+            }
         }
 
         function openModal(id) {
