@@ -475,7 +475,7 @@
             <!-- Modal Footer Buttons -->
             <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
                 <button onclick="closeModal('profile-modal')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-semibold">취소</button>
-                <button type="button" id="apply-profile-btn" onclick="applyProfileChanges(event)" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition">적용하기</button>
+                <button type="button" id="apply-profile-btn" onclick="return applyProfileChanges(event)" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition">적용하기</button>
             </div>
         </div>
     </div>
@@ -1299,16 +1299,6 @@ Top 10: ${top10Names} (하위 테마: ${bottomNames})
                 event.stopPropagation();
             }
 
-            const order = Array.isArray(state.tempManualOrder) ? [...state.tempManualOrder] : [];
-            const isCompleteOrder = order.length === 34
-                && order.every(v => typeof v === 'string' && v.trim())
-                && new Set(order).size === 34;
-
-            if (!isCompleteOrder) {
-                showToast('1~34위가 모두 인식되어야 적용할 수 있습니다. 빨간색 순위가 있다면 직접 편집에서 확인해주세요.', 'info');
-                return false;
-            }
-
             const btn = document.getElementById('apply-profile-btn');
             if (btn) {
                 btn.disabled = true;
@@ -1316,30 +1306,49 @@ Top 10: ${top10Names} (하위 테마: ${bottomNames})
             }
 
             try {
-                // 1) 상태를 먼저 갱신
-                state.userOrder = order.slice(0, 34);
+                // OCR 결과는 순위별 위치가 고정되어 있습니다.
+                // 누락/중복이 있어도 앞 순위가 당겨지지 않도록 현재 위치를 유지합니다.
+                let order = Array.isArray(state.tempManualOrder) ? [...state.tempManualOrder] : [];
+                order = order.slice(0, 34);
+                while (order.length < 34) order.push(null);
 
-                // 2) 영구 저장 + 백업 키 저장
-                const encoded = JSON.stringify(state.userOrder);
+                const validNames = new Set(GALLUP_DICTIONARY.map(t => t.name));
+                const used = new Set();
+
+                // 유효하고 중복되지 않은 값만 유지
+                order = order.map(name => {
+                    if (typeof name === 'string' && validNames.has(name) && !used.has(name)) {
+                        used.add(name);
+                        return name;
+                    }
+                    return null;
+                });
+
+                // 비어 있는 칸만 미사용 테마로 채움. 기존 순위는 이동시키지 않음.
+                const remaining = GALLUP_DICTIONARY.map(t => t.name).filter(name => !used.has(name));
+                let ri = 0;
+                order = order.map(name => name || remaining[ri++]);
+
+                if (order.length !== 34 || order.some(v => !v)) {
+                    throw new Error('34개 순위 보정 실패');
+                }
+
+                state.userOrder = [...order];
+                state.tempManualOrder = [...order];
+
+                const encoded = JSON.stringify(order);
                 localStorage.setItem('gallup_user_order', encoded);
                 localStorage.setItem('gallup_user_order_v2', encoded);
 
-                // 저장 직후 실제로 다시 읽을 수 있는지 확인
-                const saved = JSON.parse(localStorage.getItem('gallup_user_order') || 'null');
-                if (!Array.isArray(saved) || saved.length !== 34 || new Set(saved).size !== 34) {
-                    throw new Error('localStorage 저장 검증 실패');
-                }
-
-                closeModal('profile-modal');
+                // 즉시 반영 후 저장된 상태로 다시 그립니다.
                 refreshDashboard();
-                showToast('강점 프로필이 적용되었습니다. 페이지를 새로고침합니다.');
+                closeModal('profile-modal');
+                showToast('강점 프로필이 적용되었습니다.');
 
-                // GitHub Pages 캐시와 관계없이 같은 페이지를 다시 로드
-                setTimeout(() => {
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('profileReload', Date.now().toString());
-                    window.location.replace(url.toString());
-                }, 300);
+                // 확실하게 페이지를 다시 로드합니다.
+                setTimeout(function() {
+                    window.location.reload();
+                }, 400);
                 return true;
             } catch (err) {
                 console.error('프로필 적용 오류:', err);
@@ -1347,7 +1356,7 @@ Top 10: ${top10Names} (하위 테마: ${bottomNames})
                     btn.disabled = false;
                     btn.textContent = '적용하기';
                 }
-                showToast('프로필 저장에 실패했습니다. 브라우저 저장소를 사용할 수 있는지 확인해주세요.', 'info');
+                showToast('적용 중 오류가 발생했습니다. 순위 직접 편집에서 확인해주세요.', 'info');
                 return false;
             }
         }
